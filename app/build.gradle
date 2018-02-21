@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "group.tonight.electricityfeehelper"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+greendao {
+    //The current version of the database schema. This is used by the *OpenHelpers classes to migrate between schema versions. If you change your entity/database schema, this value has to be increased. Defaults to 1.
+    schemaVersion 1
+    //The package name for generated DAOs, DaoMaster, and DaoSession. Defaults to the package name of your source entities.
+    daoPackage "group.tonight.electricityfeehelper.dao"
+    //The location where generated sources should be stored at. Defaults to the generated source folder inside the build directory ( build/generated/source/greendao).
+    targetGenDir "src/main/java"
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'org.greenrobot:greendao:3.2.2'
+    // add library
+//    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.android.support:design:26.1.0'
+//    compile 'cn.yipianfengye.android:zxing-library:2.2'
+    compile 'com.zhy:okhttputils:2.6.2'
+
+    compile 'com.facebook.stetho:stetho:1.5.0'
+    compile 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
+    compile 'com.squareup.okhttp3:okhttp:3.9.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta4'
+
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5-alpha-3'
+}

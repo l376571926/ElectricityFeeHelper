@@ -1,0 +1,38 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
+
+        <!--设置Toolbar右上角的规则不自动大写-->
+        <item name="android:textAllCaps">false</item>
+        <!--
+        白色菜单字体颜色
+        安卓7.0在效
+        安卓4.4.2无效
+        -->
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+    </style>
+
+    <!--修改默认Toolbar样式-->
+    <style name="toolbar_theme" parent="AppTheme">
+        <!--Toolbar上返回按钮的颜色-->
+        <item name="colorControlNormal">@android:color/white</item>
+        <!--Toolbar上Menu中文字的颜色-->
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+    </style>
+
+    <style name="custom_btn_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/shape_default_btn</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>
