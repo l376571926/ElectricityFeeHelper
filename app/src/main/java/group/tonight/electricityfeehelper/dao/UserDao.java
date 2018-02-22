@@ -23,13 +23,33 @@ public class UserDao extends AbstractDao<User, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property AccountId = new Property(1, long.class, "accountId", false, "ACCOUNT_ID");
+        public final static Property UserId = new Property(1, String.class, "userId", false, "USER_ID");
         public final static Property UserName = new Property(2, String.class, "userName", false, "USER_NAME");
-        public final static Property Address = new Property(3, String.class, "address", false, "ADDRESS");
-        public final static Property Phone = new Property(4, String.class, "phone", false, "PHONE");
-        public final static Property CreateTime = new Property(5, long.class, "createTime", false, "CREATE_TIME");
-        public final static Property UpdateTime = new Property(6, long.class, "updateTime", false, "UPDATE_TIME");
-        public final static Property Remarks = new Property(7, String.class, "remarks", false, "REMARKS");
+        public final static Property UserPhone = new Property(3, String.class, "userPhone", false, "USER_PHONE");
+        public final static Property PowerLineId = new Property(4, String.class, "powerLineId", false, "POWER_LINE_ID");
+        public final static Property PowerLineName = new Property(5, String.class, "powerLineName", false, "POWER_LINE_NAME");
+        public final static Property MeterReadingDay = new Property(6, String.class, "meterReadingDay", false, "METER_READING_DAY");
+        public final static Property MeterReader = new Property(7, String.class, "meterReader", false, "METER_READER");
+        public final static Property MeasurementPointId = new Property(8, String.class, "measurementPointId", false, "MEASUREMENT_POINT_ID");
+        public final static Property MeterReadingId = new Property(9, String.class, "meterReadingId", false, "METER_READING_ID");
+        public final static Property PowerMeterId = new Property(10, String.class, "powerMeterId", false, "POWER_METER_ID");
+        public final static Property PowerValueType = new Property(11, String.class, "powerValueType", false, "POWER_VALUE_TYPE");
+        public final static Property LastPowerValue = new Property(12, String.class, "lastPowerValue", false, "LAST_POWER_VALUE");
+        public final static Property CurrentPowerValue = new Property(13, String.class, "currentPowerValue", false, "CURRENT_POWER_VALUE");
+        public final static Property ConsumePowerValue = new Property(14, String.class, "consumePowerValue", false, "CONSUME_POWER_VALUE");
+        public final static Property ComprehensiveRatio = new Property(15, String.class, "comprehensiveRatio", false, "COMPREHENSIVE_RATIO");
+        public final static Property MeterReadingNumber = new Property(16, String.class, "meterReadingNumber", false, "METER_READING_NUMBER");
+        public final static Property ExceptionTypes = new Property(17, String.class, "exceptionTypes", false, "EXCEPTION_TYPES");
+        public final static Property MeterReadingStatus = new Property(18, String.class, "meterReadingStatus", false, "METER_READING_STATUS");
+        public final static Property PowerSupplyId = new Property(19, String.class, "powerSupplyId", false, "POWER_SUPPLY_ID");
+        public final static Property PowerSupplyName = new Property(20, String.class, "powerSupplyName", false, "POWER_SUPPLY_NAME");
+        public final static Property UserAddress = new Property(21, String.class, "userAddress", false, "USER_ADDRESS");
+        public final static Property YingShouSum = new Property(22, double.class, "yingShouSum", false, "YING_SHOU_SUM");
+        public final static Property ShiShouSum = new Property(23, double.class, "shiShouSum", false, "SHI_SHOU_SUM");
+        public final static Property QianFeiSum = new Property(24, double.class, "qianFeiSum", false, "QIAN_FEI_SUM");
+        public final static Property CreateTime = new Property(25, long.class, "createTime", false, "CREATE_TIME");
+        public final static Property UpdateTime = new Property(26, long.class, "updateTime", false, "UPDATE_TIME");
+        public final static Property Remarks = new Property(27, String.class, "remarks", false, "REMARKS");
     }
 
     private DaoSession daoSession;
@@ -49,13 +69,33 @@ public class UserDao extends AbstractDao<User, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"USER\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
-                "\"ACCOUNT_ID\" INTEGER NOT NULL ," + // 1: accountId
+                "\"USER_ID\" TEXT," + // 1: userId
                 "\"USER_NAME\" TEXT," + // 2: userName
-                "\"ADDRESS\" TEXT," + // 3: address
-                "\"PHONE\" TEXT," + // 4: phone
-                "\"CREATE_TIME\" INTEGER NOT NULL ," + // 5: createTime
-                "\"UPDATE_TIME\" INTEGER NOT NULL ," + // 6: updateTime
-                "\"REMARKS\" TEXT);"); // 7: remarks
+                "\"USER_PHONE\" TEXT," + // 3: userPhone
+                "\"POWER_LINE_ID\" TEXT," + // 4: powerLineId
+                "\"POWER_LINE_NAME\" TEXT," + // 5: powerLineName
+                "\"METER_READING_DAY\" TEXT," + // 6: meterReadingDay
+                "\"METER_READER\" TEXT," + // 7: meterReader
+                "\"MEASUREMENT_POINT_ID\" TEXT," + // 8: measurementPointId
+                "\"METER_READING_ID\" TEXT," + // 9: meterReadingId
+                "\"POWER_METER_ID\" TEXT," + // 10: powerMeterId
+                "\"POWER_VALUE_TYPE\" TEXT," + // 11: powerValueType
+                "\"LAST_POWER_VALUE\" TEXT," + // 12: lastPowerValue
+                "\"CURRENT_POWER_VALUE\" TEXT," + // 13: currentPowerValue
+                "\"CONSUME_POWER_VALUE\" TEXT," + // 14: consumePowerValue
+                "\"COMPREHENSIVE_RATIO\" TEXT," + // 15: comprehensiveRatio
+                "\"METER_READING_NUMBER\" TEXT," + // 16: meterReadingNumber
+                "\"EXCEPTION_TYPES\" TEXT," + // 17: exceptionTypes
+                "\"METER_READING_STATUS\" TEXT," + // 18: meterReadingStatus
+                "\"POWER_SUPPLY_ID\" TEXT," + // 19: powerSupplyId
+                "\"POWER_SUPPLY_NAME\" TEXT," + // 20: powerSupplyName
+                "\"USER_ADDRESS\" TEXT," + // 21: userAddress
+                "\"YING_SHOU_SUM\" REAL NOT NULL ," + // 22: yingShouSum
+                "\"SHI_SHOU_SUM\" REAL NOT NULL ," + // 23: shiShouSum
+                "\"QIAN_FEI_SUM\" REAL NOT NULL ," + // 24: qianFeiSum
+                "\"CREATE_TIME\" INTEGER NOT NULL ," + // 25: createTime
+                "\"UPDATE_TIME\" INTEGER NOT NULL ," + // 26: updateTime
+                "\"REMARKS\" TEXT);"); // 27: remarks
     }
 
     /** Drops the underlying database table. */
@@ -72,28 +112,120 @@ public class UserDao extends AbstractDao<User, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getAccountId());
+ 
+        String userId = entity.getUserId();
+        if (userId != null) {
+            stmt.bindString(2, userId);
+        }
  
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(3, userName);
         }
  
-        String address = entity.getAddress();
-        if (address != null) {
-            stmt.bindString(4, address);
+        String userPhone = entity.getUserPhone();
+        if (userPhone != null) {
+            stmt.bindString(4, userPhone);
         }
  
-        String phone = entity.getPhone();
-        if (phone != null) {
-            stmt.bindString(5, phone);
+        String powerLineId = entity.getPowerLineId();
+        if (powerLineId != null) {
+            stmt.bindString(5, powerLineId);
         }
-        stmt.bindLong(6, entity.getCreateTime());
-        stmt.bindLong(7, entity.getUpdateTime());
+ 
+        String powerLineName = entity.getPowerLineName();
+        if (powerLineName != null) {
+            stmt.bindString(6, powerLineName);
+        }
+ 
+        String meterReadingDay = entity.getMeterReadingDay();
+        if (meterReadingDay != null) {
+            stmt.bindString(7, meterReadingDay);
+        }
+ 
+        String meterReader = entity.getMeterReader();
+        if (meterReader != null) {
+            stmt.bindString(8, meterReader);
+        }
+ 
+        String measurementPointId = entity.getMeasurementPointId();
+        if (measurementPointId != null) {
+            stmt.bindString(9, measurementPointId);
+        }
+ 
+        String meterReadingId = entity.getMeterReadingId();
+        if (meterReadingId != null) {
+            stmt.bindString(10, meterReadingId);
+        }
+ 
+        String powerMeterId = entity.getPowerMeterId();
+        if (powerMeterId != null) {
+            stmt.bindString(11, powerMeterId);
+        }
+ 
+        String powerValueType = entity.getPowerValueType();
+        if (powerValueType != null) {
+            stmt.bindString(12, powerValueType);
+        }
+ 
+        String lastPowerValue = entity.getLastPowerValue();
+        if (lastPowerValue != null) {
+            stmt.bindString(13, lastPowerValue);
+        }
+ 
+        String currentPowerValue = entity.getCurrentPowerValue();
+        if (currentPowerValue != null) {
+            stmt.bindString(14, currentPowerValue);
+        }
+ 
+        String consumePowerValue = entity.getConsumePowerValue();
+        if (consumePowerValue != null) {
+            stmt.bindString(15, consumePowerValue);
+        }
+ 
+        String comprehensiveRatio = entity.getComprehensiveRatio();
+        if (comprehensiveRatio != null) {
+            stmt.bindString(16, comprehensiveRatio);
+        }
+ 
+        String meterReadingNumber = entity.getMeterReadingNumber();
+        if (meterReadingNumber != null) {
+            stmt.bindString(17, meterReadingNumber);
+        }
+ 
+        String exceptionTypes = entity.getExceptionTypes();
+        if (exceptionTypes != null) {
+            stmt.bindString(18, exceptionTypes);
+        }
+ 
+        String meterReadingStatus = entity.getMeterReadingStatus();
+        if (meterReadingStatus != null) {
+            stmt.bindString(19, meterReadingStatus);
+        }
+ 
+        String powerSupplyId = entity.getPowerSupplyId();
+        if (powerSupplyId != null) {
+            stmt.bindString(20, powerSupplyId);
+        }
+ 
+        String powerSupplyName = entity.getPowerSupplyName();
+        if (powerSupplyName != null) {
+            stmt.bindString(21, powerSupplyName);
+        }
+ 
+        String userAddress = entity.getUserAddress();
+        if (userAddress != null) {
+            stmt.bindString(22, userAddress);
+        }
+        stmt.bindDouble(23, entity.getYingShouSum());
+        stmt.bindDouble(24, entity.getShiShouSum());
+        stmt.bindDouble(25, entity.getQianFeiSum());
+        stmt.bindLong(26, entity.getCreateTime());
+        stmt.bindLong(27, entity.getUpdateTime());
  
         String remarks = entity.getRemarks();
         if (remarks != null) {
-            stmt.bindString(8, remarks);
+            stmt.bindString(28, remarks);
         }
     }
 
@@ -105,28 +237,120 @@ public class UserDao extends AbstractDao<User, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getAccountId());
+ 
+        String userId = entity.getUserId();
+        if (userId != null) {
+            stmt.bindString(2, userId);
+        }
  
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(3, userName);
         }
  
-        String address = entity.getAddress();
-        if (address != null) {
-            stmt.bindString(4, address);
+        String userPhone = entity.getUserPhone();
+        if (userPhone != null) {
+            stmt.bindString(4, userPhone);
         }
  
-        String phone = entity.getPhone();
-        if (phone != null) {
-            stmt.bindString(5, phone);
+        String powerLineId = entity.getPowerLineId();
+        if (powerLineId != null) {
+            stmt.bindString(5, powerLineId);
         }
-        stmt.bindLong(6, entity.getCreateTime());
-        stmt.bindLong(7, entity.getUpdateTime());
+ 
+        String powerLineName = entity.getPowerLineName();
+        if (powerLineName != null) {
+            stmt.bindString(6, powerLineName);
+        }
+ 
+        String meterReadingDay = entity.getMeterReadingDay();
+        if (meterReadingDay != null) {
+            stmt.bindString(7, meterReadingDay);
+        }
+ 
+        String meterReader = entity.getMeterReader();
+        if (meterReader != null) {
+            stmt.bindString(8, meterReader);
+        }
+ 
+        String measurementPointId = entity.getMeasurementPointId();
+        if (measurementPointId != null) {
+            stmt.bindString(9, measurementPointId);
+        }
+ 
+        String meterReadingId = entity.getMeterReadingId();
+        if (meterReadingId != null) {
+            stmt.bindString(10, meterReadingId);
+        }
+ 
+        String powerMeterId = entity.getPowerMeterId();
+        if (powerMeterId != null) {
+            stmt.bindString(11, powerMeterId);
+        }
+ 
+        String powerValueType = entity.getPowerValueType();
+        if (powerValueType != null) {
+            stmt.bindString(12, powerValueType);
+        }
+ 
+        String lastPowerValue = entity.getLastPowerValue();
+        if (lastPowerValue != null) {
+            stmt.bindString(13, lastPowerValue);
+        }
+ 
+        String currentPowerValue = entity.getCurrentPowerValue();
+        if (currentPowerValue != null) {
+            stmt.bindString(14, currentPowerValue);
+        }
+ 
+        String consumePowerValue = entity.getConsumePowerValue();
+        if (consumePowerValue != null) {
+            stmt.bindString(15, consumePowerValue);
+        }
+ 
+        String comprehensiveRatio = entity.getComprehensiveRatio();
+        if (comprehensiveRatio != null) {
+            stmt.bindString(16, comprehensiveRatio);
+        }
+ 
+        String meterReadingNumber = entity.getMeterReadingNumber();
+        if (meterReadingNumber != null) {
+            stmt.bindString(17, meterReadingNumber);
+        }
+ 
+        String exceptionTypes = entity.getExceptionTypes();
+        if (exceptionTypes != null) {
+            stmt.bindString(18, exceptionTypes);
+        }
+ 
+        String meterReadingStatus = entity.getMeterReadingStatus();
+        if (meterReadingStatus != null) {
+            stmt.bindString(19, meterReadingStatus);
+        }
+ 
+        String powerSupplyId = entity.getPowerSupplyId();
+        if (powerSupplyId != null) {
+            stmt.bindString(20, powerSupplyId);
+        }
+ 
+        String powerSupplyName = entity.getPowerSupplyName();
+        if (powerSupplyName != null) {
+            stmt.bindString(21, powerSupplyName);
+        }
+ 
+        String userAddress = entity.getUserAddress();
+        if (userAddress != null) {
+            stmt.bindString(22, userAddress);
+        }
+        stmt.bindDouble(23, entity.getYingShouSum());
+        stmt.bindDouble(24, entity.getShiShouSum());
+        stmt.bindDouble(25, entity.getQianFeiSum());
+        stmt.bindLong(26, entity.getCreateTime());
+        stmt.bindLong(27, entity.getUpdateTime());
  
         String remarks = entity.getRemarks();
         if (remarks != null) {
-            stmt.bindString(8, remarks);
+            stmt.bindString(28, remarks);
         }
     }
 
@@ -145,13 +369,33 @@ public class UserDao extends AbstractDao<User, Long> {
     public User readEntity(Cursor cursor, int offset) {
         User entity = new User( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getLong(offset + 1), // accountId
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // userId
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // userName
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // address
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // phone
-            cursor.getLong(offset + 5), // createTime
-            cursor.getLong(offset + 6), // updateTime
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // remarks
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // userPhone
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // powerLineId
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // powerLineName
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // meterReadingDay
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // meterReader
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // measurementPointId
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // meterReadingId
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // powerMeterId
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // powerValueType
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // lastPowerValue
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // currentPowerValue
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // consumePowerValue
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // comprehensiveRatio
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // meterReadingNumber
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17), // exceptionTypes
+            cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18), // meterReadingStatus
+            cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19), // powerSupplyId
+            cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20), // powerSupplyName
+            cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21), // userAddress
+            cursor.getDouble(offset + 22), // yingShouSum
+            cursor.getDouble(offset + 23), // shiShouSum
+            cursor.getDouble(offset + 24), // qianFeiSum
+            cursor.getLong(offset + 25), // createTime
+            cursor.getLong(offset + 26), // updateTime
+            cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27) // remarks
         );
         return entity;
     }
@@ -159,13 +403,33 @@ public class UserDao extends AbstractDao<User, Long> {
     @Override
     public void readEntity(Cursor cursor, User entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setAccountId(cursor.getLong(offset + 1));
+        entity.setUserId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setUserName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setAddress(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setPhone(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setCreateTime(cursor.getLong(offset + 5));
-        entity.setUpdateTime(cursor.getLong(offset + 6));
-        entity.setRemarks(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setUserPhone(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setPowerLineId(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setPowerLineName(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setMeterReadingDay(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setMeterReader(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setMeasurementPointId(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setMeterReadingId(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setPowerMeterId(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setPowerValueType(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setLastPowerValue(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setCurrentPowerValue(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setConsumePowerValue(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setComprehensiveRatio(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setMeterReadingNumber(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setExceptionTypes(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
+        entity.setMeterReadingStatus(cursor.isNull(offset + 18) ? null : cursor.getString(offset + 18));
+        entity.setPowerSupplyId(cursor.isNull(offset + 19) ? null : cursor.getString(offset + 19));
+        entity.setPowerSupplyName(cursor.isNull(offset + 20) ? null : cursor.getString(offset + 20));
+        entity.setUserAddress(cursor.isNull(offset + 21) ? null : cursor.getString(offset + 21));
+        entity.setYingShouSum(cursor.getDouble(offset + 22));
+        entity.setShiShouSum(cursor.getDouble(offset + 23));
+        entity.setQianFeiSum(cursor.getDouble(offset + 24));
+        entity.setCreateTime(cursor.getLong(offset + 25));
+        entity.setUpdateTime(cursor.getLong(offset + 26));
+        entity.setRemarks(cursor.isNull(offset + 27) ? null : cursor.getString(offset + 27));
      }
     
     @Override

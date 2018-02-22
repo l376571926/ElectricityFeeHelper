@@ -11,20 +11,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
-import java.util.Date;
 import java.util.List;
 
-import group.tonight.electricityfeehelper.dao.OrderDao;
-import group.tonight.electricityfeehelper.fragments.PayFragment;
-import group.tonight.electricityfeehelper.utils.BaseRecyclerAdapter;
 import group.tonight.electricityfeehelper.MainApp;
-import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
-import group.tonight.electricityfeehelper.dao.Order;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.utils.SmartViewHolder;
+import group.tonight.electricityfeehelper.dao.Order;
+import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.fragments.AddOrderFragment;
-import group.tonight.electricityfeehelper.utils.MyUtils;
+import group.tonight.electricityfeehelper.fragments.PayFragment;
+import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
+import group.tonight.electricityfeehelper.utils.BaseRecyclerAdapter;
+import group.tonight.electricityfeehelper.utils.SmartViewHolder;
 
 /**
  * 用户欠费记录
@@ -84,8 +82,9 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
         protected void onBindViewHolder(SmartViewHolder holder, Order model, int position) {
             long createTime = model.getCreateTime();
             double qianFei = model.getQianFei();
+            String orderDate = model.getOrderDate();
 
-            holder.text(R.id.date, MyUtils.mDateFormat.format(new Date(createTime)));
+            holder.text(R.id.date, orderDate);
             holder.text(R.id.money, getString(R.string.qian_fei_place_holder, qianFei + ""));
         }
     };

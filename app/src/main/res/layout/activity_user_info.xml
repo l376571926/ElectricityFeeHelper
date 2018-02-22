@@ -9,22 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="?android:listPreferredItemHeightSmall"
-            android:background="@android:color/white"
-            android:gravity="center_vertical"
-            android:paddingLeft="?listPreferredItemPaddingLeft"
-            android:paddingRight="?listPreferredItemPaddingRight"
-            android:text="用户资料"
-            android:textColor="@color/secondary_text" />
+        android:orientation="vertical"
+        android:paddingTop="10dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -71,7 +57,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="用户姓名："
+                android:text="用户名称："
                 android:textColor="@color/primary_text" />
 
             <TextView
@@ -100,7 +86,35 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="详细地址："
+                android:text="联系方式："
+                android:textColor="@color/primary_text" />
+
+            <TextView
+                android:id="@+id/phone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@color/secondary_text"
+                tools:text="13800138000" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?android:listPreferredItemHeightSmall"
+            android:background="@android:color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="?listPreferredItemPaddingLeft"
+            android:paddingRight="?listPreferredItemPaddingRight">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="用电地址："
                 android:textColor="@color/primary_text" />
 
             <TextView
@@ -118,6 +132,12 @@
             android:layout_height="1dp"
             android:background="@color/divider" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/divider" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="?android:listPreferredItemHeightSmall"
@@ -129,7 +149,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="电表号："
+                android:text="电能表号："
                 android:textColor="@color/primary_text" />
 
             <TextView
@@ -137,8 +157,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:inputType="number"
                 android:textColor="@color/secondary_text"
-                tools:text="201802" />
+                tools:text="0" />
 
         </LinearLayout>
 
@@ -158,16 +179,48 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="电话："
+                android:text="抄表序号："
                 android:textColor="@color/primary_text" />
 
             <TextView
-                android:id="@+id/phone"
+                android:id="@+id/position_id"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:inputType="number"
                 android:textColor="@color/secondary_text"
-                tools:text="13800138000" />
+                tools:text="0" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?android:listPreferredItemHeightSmall"
+            android:background="@android:color/white"
+            android:gravity="center_vertical"
+            android:paddingLeft="?listPreferredItemPaddingLeft"
+            android:paddingRight="?listPreferredItemPaddingRight">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="抄表段编号："
+                android:textColor="@color/primary_text" />
+
+            <TextView
+                android:id="@+id/serial_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="number"
+                android:textColor="@color/secondary_text"
+                tools:text="0" />
+
         </LinearLayout>
 
         <TextView
@@ -179,22 +232,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
-            android:background="@color/divider" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="?android:listPreferredItemHeightSmall"
-            android:background="@android:color/white"
-            android:gravity="center_vertical"
-            android:paddingLeft="?listPreferredItemPaddingLeft"
-            android:paddingRight="?listPreferredItemPaddingRight"
-            android:text="收费情况"
-            android:textColor="@color/secondary_text" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-
             android:background="@color/divider" />
 
         <LinearLayout

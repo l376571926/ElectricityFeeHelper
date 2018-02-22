@@ -1,9 +1,13 @@
 package group.tonight.electricityfeehelper.activities;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.List;
@@ -21,7 +25,7 @@ import group.tonight.electricityfeehelper.utils.MyUtils;
 /**
  * 用户资料
  */
-public class UserInfoActivity extends BackEnableActivity implements OnFragmentInteractionListener {
+public class UserInfoActivity extends BackEnableActivity implements OnFragmentInteractionListener, View.OnClickListener {
 
     private User mUser;
     private TextView mUserIdTv;
@@ -32,6 +36,18 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     private TextView mYingShouTv;
     private TextView mShiShouTv;
     private TextView mQianFeiTv;
+    private TextView mPositionIdTv;
+    private TextView mSerialIdTv;
+
+    @Override
+    protected int setChildLayoutId() {
+        return R.layout.activity_user_info;
+    }
+
+    @Override
+    protected String setActivityName() {
+        return "用户资料";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +57,16 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
         mUserNameTv = (TextView) findViewById(R.id.user_name);
         mAddressTv = (TextView) findViewById(R.id.address);
         mPhoneTv = (TextView) findViewById(R.id.phone);
-        mDeviceIdTv = (TextView) findViewById(R.id.device_id);
+
+        mDeviceIdTv = (TextView) findViewById(R.id.device_id);//电能表号
+        mPositionIdTv = (TextView) findViewById(R.id.position_id);//位置序号
+        mSerialIdTv = (TextView) findViewById(R.id.serial_id);//抄表段编号
 
         mYingShouTv = (TextView) findViewById(R.id.ying_shou);
         mShiShouTv = (TextView) findViewById(R.id.shi_shou);
         mQianFeiTv = (TextView) findViewById(R.id.qian_fei);
+
+        mPhoneTv.setOnClickListener(this);
 
         long _id = getIntent().getLongExtra("_id", -1L);
         DaoSession daoSession = ((MainApp) getApplication()).getDaoSession();
@@ -60,17 +81,23 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     }
 
     private void initData() {
-        long userId = mUser.getAccountId();
+        String userId = mUser.getUserId();
         String userName = mUser.getUserName();
-        String address = mUser.getAddress();
-        String phone = mUser.getPhone();
-//        String orderDate = mUser.getOrderDate();
+        String address = mUser.getUserAddress();
+        String phone = mUser.getUserPhone();
 
-        mUserIdTv.setText(userId + "");
+        String deviceId = mUser.getPowerMeterId();
+        String positionId = mUser.getMeterReadingId();
+        String serialId = mUser.getPowerLineId();
+
+        mUserIdTv.setText(userId);
         mUserNameTv.setText(userName);
         mAddressTv.setText(address);
         mPhoneTv.setText(phone);
-//        mDeviceIdTv.setText(orderDate);
+
+        mDeviceIdTv.setText(deviceId);
+        mPositionIdTv.setText(positionId);
+        mSerialIdTv.setText(serialId);
 
         List<Order> orderList = mUser.getOrders();
         double yingShouSum = 0;
@@ -105,16 +132,6 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     }
 
     @Override
-    protected int setChildLayoutId() {
-        return R.layout.activity_user_info;
-    }
-
-    @Override
-    protected String setActivityName() {
-        return "用户资料";
-    }
-
-    @Override
     public void onFragmentInteraction(int result) {
         if (result == Activity.RESULT_OK) {
             DaoSession daoSession = ((MainApp) getApplication()).getDaoSession();
@@ -122,6 +139,41 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
             mUser = userDao.load(mUser.getId());
 
             initData();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.phone:
+                String phone = mPhoneTv.getText().toString();
+                if (TextUtils.isEmpty(phone)) {
+                    return;
+                }
+                if (TextUtils.equals("0", phone)) {
+                    return;
+                }
+//                Intent intent = new Intent(Intent.ACTION_CALL);
+//                Uri data = Uri.parse("tel:" + phone);
+//                intent.setData(data);
+//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+//                    //    ActivityCompat#requestPermissions
+//                    // here to request the missing permissions, and then overriding
+//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                    //                                          int[] grantResults)
+//                    // to handle the case where the user grants the permission. See the documentation
+//                    // for ActivityCompat#requestPermissions for more details.
+//                    return;
+//                }
+//                startActivity(intent);
+
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                Uri data = Uri.parse("tel:" + phone);
+                intent.setData(data);
+                startActivity(intent);
+                break;
+            default:
+                break;
         }
     }
 }

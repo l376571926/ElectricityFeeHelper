@@ -6,8 +6,8 @@ android {
         applicationId "group.tonight.electricityfeehelper"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "v1.0"
     }
     buildTypes {
         release {
@@ -19,7 +19,7 @@ android {
 
 greendao {
     //The current version of the database schema. This is used by the *OpenHelpers classes to migrate between schema versions. If you change your entity/database schema, this value has to be increased. Defaults to 1.
-    schemaVersion 1
+    schemaVersion 3
     //The package name for generated DAOs, DaoMaster, and DaoSession. Defaults to the package name of your source entities.
     daoPackage "group.tonight.electricityfeehelper.dao"
     //The location where generated sources should be stored at. Defaults to the generated source folder inside the build directory ( build/generated/source/greendao).

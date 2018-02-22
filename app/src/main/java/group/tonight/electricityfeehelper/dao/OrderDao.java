@@ -27,13 +27,17 @@ public class OrderDao extends AbstractDao<Order, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Uid = new Property(1, Long.class, "uid", false, "UID");
-        public final static Property YingShou = new Property(2, double.class, "yingShou", false, "YING_SHOU");
-        public final static Property ShiShou = new Property(3, double.class, "shiShou", false, "SHI_SHOU");
-        public final static Property QianFei = new Property(4, double.class, "qianFei", false, "QIAN_FEI");
-        public final static Property Remarks = new Property(5, String.class, "remarks", false, "REMARKS");
-        public final static Property OrderDate = new Property(6, String.class, "orderDate", false, "ORDER_DATE");
-        public final static Property CreateTime = new Property(7, long.class, "createTime", false, "CREATE_TIME");
-        public final static Property UpdateTime = new Property(8, long.class, "updateTime", false, "UPDATE_TIME");
+        public final static Property OrderDate = new Property(2, String.class, "orderDate", false, "ORDER_DATE");
+        public final static Property YingShou = new Property(3, double.class, "yingShou", false, "YING_SHOU");
+        public final static Property ShiShou = new Property(4, double.class, "shiShou", false, "SHI_SHOU");
+        public final static Property QianFei = new Property(5, double.class, "qianFei", false, "QIAN_FEI");
+        public final static Property YingShouWeiYue = new Property(6, double.class, "yingShouWeiYue", false, "YING_SHOU_WEI_YUE");
+        public final static Property ShiShouWeiYue = new Property(7, double.class, "shiShouWeiYue", false, "SHI_SHOU_WEI_YUE");
+        public final static Property QianJiaoWeiYue = new Property(8, double.class, "qianJiaoWeiYue", false, "QIAN_JIAO_WEI_YUE");
+        public final static Property OrderStatus = new Property(9, String.class, "orderStatus", false, "ORDER_STATUS");
+        public final static Property Remarks = new Property(10, String.class, "remarks", false, "REMARKS");
+        public final static Property CreateTime = new Property(11, long.class, "createTime", false, "CREATE_TIME");
+        public final static Property UpdateTime = new Property(12, long.class, "updateTime", false, "UPDATE_TIME");
     }
 
     private Query<Order> user_OrdersQuery;
@@ -52,13 +56,17 @@ public class OrderDao extends AbstractDao<Order, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"ORDER\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY ," + // 0: id
                 "\"UID\" INTEGER," + // 1: uid
-                "\"YING_SHOU\" REAL NOT NULL ," + // 2: yingShou
-                "\"SHI_SHOU\" REAL NOT NULL ," + // 3: shiShou
-                "\"QIAN_FEI\" REAL NOT NULL ," + // 4: qianFei
-                "\"REMARKS\" TEXT," + // 5: remarks
-                "\"ORDER_DATE\" TEXT," + // 6: orderDate
-                "\"CREATE_TIME\" INTEGER NOT NULL ," + // 7: createTime
-                "\"UPDATE_TIME\" INTEGER NOT NULL );"); // 8: updateTime
+                "\"ORDER_DATE\" TEXT," + // 2: orderDate
+                "\"YING_SHOU\" REAL NOT NULL ," + // 3: yingShou
+                "\"SHI_SHOU\" REAL NOT NULL ," + // 4: shiShou
+                "\"QIAN_FEI\" REAL NOT NULL ," + // 5: qianFei
+                "\"YING_SHOU_WEI_YUE\" REAL NOT NULL ," + // 6: yingShouWeiYue
+                "\"SHI_SHOU_WEI_YUE\" REAL NOT NULL ," + // 7: shiShouWeiYue
+                "\"QIAN_JIAO_WEI_YUE\" REAL NOT NULL ," + // 8: qianJiaoWeiYue
+                "\"ORDER_STATUS\" TEXT," + // 9: orderStatus
+                "\"REMARKS\" TEXT," + // 10: remarks
+                "\"CREATE_TIME\" INTEGER NOT NULL ," + // 11: createTime
+                "\"UPDATE_TIME\" INTEGER NOT NULL );"); // 12: updateTime
     }
 
     /** Drops the underlying database table. */
@@ -80,21 +88,29 @@ public class OrderDao extends AbstractDao<Order, Long> {
         if (uid != null) {
             stmt.bindLong(2, uid);
         }
-        stmt.bindDouble(3, entity.getYingShou());
-        stmt.bindDouble(4, entity.getShiShou());
-        stmt.bindDouble(5, entity.getQianFei());
- 
-        String remarks = entity.getRemarks();
-        if (remarks != null) {
-            stmt.bindString(6, remarks);
-        }
  
         String orderDate = entity.getOrderDate();
         if (orderDate != null) {
-            stmt.bindString(7, orderDate);
+            stmt.bindString(3, orderDate);
         }
-        stmt.bindLong(8, entity.getCreateTime());
-        stmt.bindLong(9, entity.getUpdateTime());
+        stmt.bindDouble(4, entity.getYingShou());
+        stmt.bindDouble(5, entity.getShiShou());
+        stmt.bindDouble(6, entity.getQianFei());
+        stmt.bindDouble(7, entity.getYingShouWeiYue());
+        stmt.bindDouble(8, entity.getShiShouWeiYue());
+        stmt.bindDouble(9, entity.getQianJiaoWeiYue());
+ 
+        String orderStatus = entity.getOrderStatus();
+        if (orderStatus != null) {
+            stmt.bindString(10, orderStatus);
+        }
+ 
+        String remarks = entity.getRemarks();
+        if (remarks != null) {
+            stmt.bindString(11, remarks);
+        }
+        stmt.bindLong(12, entity.getCreateTime());
+        stmt.bindLong(13, entity.getUpdateTime());
     }
 
     @Override
@@ -110,21 +126,29 @@ public class OrderDao extends AbstractDao<Order, Long> {
         if (uid != null) {
             stmt.bindLong(2, uid);
         }
-        stmt.bindDouble(3, entity.getYingShou());
-        stmt.bindDouble(4, entity.getShiShou());
-        stmt.bindDouble(5, entity.getQianFei());
- 
-        String remarks = entity.getRemarks();
-        if (remarks != null) {
-            stmt.bindString(6, remarks);
-        }
  
         String orderDate = entity.getOrderDate();
         if (orderDate != null) {
-            stmt.bindString(7, orderDate);
+            stmt.bindString(3, orderDate);
         }
-        stmt.bindLong(8, entity.getCreateTime());
-        stmt.bindLong(9, entity.getUpdateTime());
+        stmt.bindDouble(4, entity.getYingShou());
+        stmt.bindDouble(5, entity.getShiShou());
+        stmt.bindDouble(6, entity.getQianFei());
+        stmt.bindDouble(7, entity.getYingShouWeiYue());
+        stmt.bindDouble(8, entity.getShiShouWeiYue());
+        stmt.bindDouble(9, entity.getQianJiaoWeiYue());
+ 
+        String orderStatus = entity.getOrderStatus();
+        if (orderStatus != null) {
+            stmt.bindString(10, orderStatus);
+        }
+ 
+        String remarks = entity.getRemarks();
+        if (remarks != null) {
+            stmt.bindString(11, remarks);
+        }
+        stmt.bindLong(12, entity.getCreateTime());
+        stmt.bindLong(13, entity.getUpdateTime());
     }
 
     @Override
@@ -137,13 +161,17 @@ public class OrderDao extends AbstractDao<Order, Long> {
         Order entity = new Order( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // uid
-            cursor.getDouble(offset + 2), // yingShou
-            cursor.getDouble(offset + 3), // shiShou
-            cursor.getDouble(offset + 4), // qianFei
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // remarks
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // orderDate
-            cursor.getLong(offset + 7), // createTime
-            cursor.getLong(offset + 8) // updateTime
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // orderDate
+            cursor.getDouble(offset + 3), // yingShou
+            cursor.getDouble(offset + 4), // shiShou
+            cursor.getDouble(offset + 5), // qianFei
+            cursor.getDouble(offset + 6), // yingShouWeiYue
+            cursor.getDouble(offset + 7), // shiShouWeiYue
+            cursor.getDouble(offset + 8), // qianJiaoWeiYue
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // orderStatus
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // remarks
+            cursor.getLong(offset + 11), // createTime
+            cursor.getLong(offset + 12) // updateTime
         );
         return entity;
     }
@@ -152,13 +180,17 @@ public class OrderDao extends AbstractDao<Order, Long> {
     public void readEntity(Cursor cursor, Order entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUid(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setYingShou(cursor.getDouble(offset + 2));
-        entity.setShiShou(cursor.getDouble(offset + 3));
-        entity.setQianFei(cursor.getDouble(offset + 4));
-        entity.setRemarks(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setOrderDate(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setCreateTime(cursor.getLong(offset + 7));
-        entity.setUpdateTime(cursor.getLong(offset + 8));
+        entity.setOrderDate(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setYingShou(cursor.getDouble(offset + 3));
+        entity.setShiShou(cursor.getDouble(offset + 4));
+        entity.setQianFei(cursor.getDouble(offset + 5));
+        entity.setYingShouWeiYue(cursor.getDouble(offset + 6));
+        entity.setShiShouWeiYue(cursor.getDouble(offset + 7));
+        entity.setQianJiaoWeiYue(cursor.getDouble(offset + 8));
+        entity.setOrderStatus(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setRemarks(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setCreateTime(cursor.getLong(offset + 11));
+        entity.setUpdateTime(cursor.getLong(offset + 12));
      }
     
     @Override

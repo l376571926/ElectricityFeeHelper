@@ -11,10 +11,8 @@
         android:id="@+id/action_add_user"
         android:icon="@drawable/ic_plus_white_24dp"
         android:title="手动添加用户" />
-    <!--
     <item
         android:id="@+id/action_add_user_batch"
         android:icon="@drawable/ic_cloud_download_white_24dp"
-        android:title="获取最新数据" />
-    -->
+        android:title="获取最新用户数据" />
 </menu>
