@@ -49,13 +49,13 @@ public class SplashActivity extends AppCompatActivity {
                             "nydlj_503.txt",
                             "nydlj_513.txt",
                             "nydlj_601.txt",
-                            "nydlj_703.txt",
-                            "nydlj_735.txt"
+                            "nydlj_703.txt"
+//                            "nydlj_735.txt"
                     };
                     int length = strings.length;
                     mInitDataPb.setMax(length);
                     for (int i = 0; i < length; i++) {
-                        String fileName = strings[0];
+                        String fileName = strings[i];
                         try {
                             InputStream inputStream = getApplicationContext().getAssets().open(fileName);
                             int size = inputStream.available();
@@ -63,6 +63,7 @@ public class SplashActivity extends AppCompatActivity {
                             int read = inputStream.read(bytes);
                             inputStream.close();
                             String string = new String(Base64.decode(bytes, Base64.DEFAULT));
+//                            Log.e(TAG, "run: ----------------------" + fileName + "-----------------------------");
                             MainActivity.saveUserInfoToDb(SplashActivity.this, string);
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -74,21 +75,16 @@ public class SplashActivity extends AppCompatActivity {
                                 mInitDataPb.setProgress(finalI);
                             }
                         });
-
-                        if (i >= length - 1) {
-                            startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                            finish();
-                        }
                     }
+                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                    finish();
                 }
             }).start();
         } else {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
             finish();
         }
     }
 
-    public interface OnDbTransactionListener {
-        void inProgress(int progress, int total);
-    }
+
 }

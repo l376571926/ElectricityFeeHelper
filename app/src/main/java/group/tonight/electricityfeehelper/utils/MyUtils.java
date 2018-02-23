@@ -5,14 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import group.tonight.electricityfeehelper.MainApp;
-import group.tonight.electricityfeehelper.dao.User;
-
 /**
  * Created by liyiwei on 2018/2/21.
  */
 
 public class MyUtils {
+    public static final String LATEST_USER_URL = "https://raw.githubusercontent.com/l376571926/l376571926.github.io/master/nydlj_latest_user.json";
+    public static final String LATEST_ORDER_URL = "https://raw.githubusercontent.com/l376571926/l376571926.github.io/master/nydlj_latest_order.json";
+    public static final String LATEST_UPDATE_URL = "https://raw.githubusercontent.com/l376571926/l376571926.github.io/master/nydlj_latest_update.json";
 
     /**
      * 判断是否为整数
@@ -26,7 +26,8 @@ public class MyUtils {
     }
 
     private static DecimalFormat mDecimalFormat = new DecimalFormat("###,###,##0.00");
-    public static String formatDecimal(double amount){
+
+    public static String formatDecimal(double amount) {
         return mDecimalFormat.format(amount);
     }
 

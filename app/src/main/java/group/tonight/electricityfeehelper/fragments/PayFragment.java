@@ -2,11 +2,9 @@ package group.tonight.electricityfeehelper.fragments;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.test.mock.MockApplication;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,8 +88,8 @@ public class PayFragment extends DialogFragment implements View.OnClickListener 
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 

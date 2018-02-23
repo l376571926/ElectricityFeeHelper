@@ -40,6 +40,7 @@ import group.tonight.electricityfeehelper.dao.UserDao;
 import group.tonight.electricityfeehelper.fragments.AddUserFragment;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
 import group.tonight.electricityfeehelper.utils.BaseRecyclerAdapter;
+import group.tonight.electricityfeehelper.utils.MyUtils;
 import group.tonight.electricityfeehelper.utils.SmartViewHolder;
 import okhttp3.Call;
 import okhttp3.Response;
@@ -49,9 +50,6 @@ public class MainActivity extends BackEnableActivity implements OnFragmentIntera
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE = 3030;
-
-    private static final String LATEST_USER_URL = "https://raw.githubusercontent.com/l376571926/l376571926.github.io/master/nydlj_latest_user.json";
-    private static final String LATEST_ORDER_URL = "https://raw.githubusercontent.com/l376571926/l376571926.github.io/master/nydlj_latest_order.json";
 
     private RecyclerView mRecyclerView;
     private SearchView mSearchView;
@@ -112,7 +110,7 @@ public class MainActivity extends BackEnableActivity implements OnFragmentIntera
         mRefreshLayout.setOnRefreshLoadMoreListener(this);
 
         OkHttpUtils.get()
-                .url(LATEST_ORDER_URL)
+                .url(MyUtils.LATEST_ORDER_URL)
                 .build()
                 .execute(mOrderListCallback);
     }
@@ -186,7 +184,7 @@ public class MainActivity extends BackEnableActivity implements OnFragmentIntera
                 mProgressDialog.show();
             }
             OkHttpUtils.get()
-                    .url(LATEST_USER_URL)
+                    .url(MyUtils.LATEST_USER_URL)
                     .build()
                     .execute(mUserListCallback);
         }
@@ -220,7 +218,7 @@ public class MainActivity extends BackEnableActivity implements OnFragmentIntera
     public void onRefresh(RefreshLayout refreshLayout) {
         refreshLayout.finishRefresh();
         OkHttpUtils.get()
-                .url(LATEST_ORDER_URL)
+                .url(MyUtils.LATEST_ORDER_URL)
                 .build()
                 .execute(mOrderListCallback);
     }
@@ -403,6 +401,7 @@ public class MainActivity extends BackEnableActivity implements OnFragmentIntera
             for (int i = 0; i < data.length(); i++) {
                 JSONObject jsonObject = data.getJSONObject(i);
                 String userId = jsonObject.getString("用户编号");
+//                Log.e(TAG, "saveUserInfoToDb: " + i + " " + userId);
                 String userName = jsonObject.getString("用户名称");
                 String userPhone = null;
                 try {
