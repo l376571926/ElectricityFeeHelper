@@ -11,10 +11,14 @@ import android.support.v7.widget.SearchView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 
@@ -34,6 +38,7 @@ import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.dao.UserDao;
 import group.tonight.electricityfeehelper.interfaces.OnListFragmentInteractionListener;
+import group.tonight.electricityfeehelper.utils.MyUtils;
 import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -54,7 +59,7 @@ public class OrderListFragment extends Fragment {
     private List<User> mUserList;
     private RecyclerView mListView;
     private TextView mCountView;
-    private SearchView mSearchView;
+    private RefreshLayout mRefreshLayout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -84,40 +89,26 @@ public class OrderListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_list, container, false);
-        mSearchView = (SearchView) view.findViewById(R.id.search_view);
         mCountView = (TextView) view.findViewById(R.id.count);
-        mListView = (RecyclerView) view.findViewById(R.id.list);
-
-        mSearchView.setQueryHint("请输入用户编号或者用户名称");
-        mSearchView.setIconifiedByDefault(false);
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mRefreshLayout = (RefreshLayout) view.findViewById(R.id.smart_refresh_layout);
+        mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
+            public void onLoadMore(RefreshLayout refreshLayout) {
+                refreshLayout.finishLoadMore();
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                if (getActivity() != null) {
-                    DaoSession daoSession = ((MainApp) getActivity().getApplication()).getDaoSession();
-                    UserDao userDao = daoSession.getUserDao();
-
-                    QueryBuilder<User> userQueryBuilder = userDao.queryBuilder()
-                            .whereOr(UserDao.Properties.UserId.like("%" + newText + "%"), UserDao.Properties.UserName.like("%" + newText + "%"));
-
-                    userQueryBuilder.where(UserDao.Properties.QianFeiSum.notEq(0));
-
-                    List<User> list = userQueryBuilder
-                            .limit(50)
-                            .list();
-                    mUserList.clear();
-                    mUserList.addAll(list);
-                    mMyOrderRecyclerViewAdapter.notifyDataSetChanged();
-                }
-                return true;
+            public void onRefresh(RefreshLayout refreshLayout) {
+                refreshLayout.finishRefresh();
+                OkHttpUtils.get()
+                        .url(MyUtils.LATEST_ORDER_URL)
+                        .build()
+                        .execute(mOrderListCallback);
             }
         });
+        mListView = (RecyclerView) view.findViewById(R.id.list);
+
+        setHasOptionsMenu(true);
 
         // Set the adapter
         Context context = view.getContext();
@@ -143,6 +134,52 @@ public class OrderListFragment extends Fragment {
 
 
         return view;
+    }
+
+    /**
+     * 重写这个方法要先调用setHasOptionsMenu方法
+     *
+     * @param menu
+     * @param inflater
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_order_list_fragment, menu);
+
+        SearchView mSearchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        mSearchView.setQueryHint("请输入用户编号或者用户名称");
+//        mSearchView.setIconifiedByDefault(false);//false表示加载后默认为搜索框输入状态
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.e(TAG, "onQueryTextSubmit: " + query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.e(TAG, "onQueryTextChange: " + newText);
+                if (getActivity() != null) {
+                    DaoSession daoSession = ((MainApp) getActivity().getApplication()).getDaoSession();
+                    UserDao userDao = daoSession.getUserDao();
+
+                    QueryBuilder<User> userQueryBuilder = userDao.queryBuilder()
+                            .whereOr(UserDao.Properties.UserId.like("%" + newText + "%"), UserDao.Properties.UserName.like("%" + newText + "%"));
+
+                    userQueryBuilder.where(UserDao.Properties.QianFeiSum.notEq(0));
+
+                    List<User> list = userQueryBuilder
+                            .limit(50)
+                            .list();
+                    mUserList.clear();
+                    mUserList.addAll(list);
+                    mMyOrderRecyclerViewAdapter.notifyDataSetChanged();
+                }
+                return false;
+            }
+        });
     }
 
     private void loadQianFeiData() {

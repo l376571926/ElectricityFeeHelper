@@ -13,16 +13,6 @@
         android:layout_height="10dp"
         android:background="@android:drawable/divider_horizontal_bright" />
 
-    <android.support.v7.widget.SearchView
-        android:id="@+id/search_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@android:drawable/divider_horizontal_bright" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/listPreferredItemHeightSmall"
@@ -52,12 +42,20 @@
         android:layout_height="10dp"
         android:background="@android:drawable/divider_horizontal_bright" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/smart_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_order" />
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="500dp"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/fragment_order" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
 </LinearLayout>
 
 
