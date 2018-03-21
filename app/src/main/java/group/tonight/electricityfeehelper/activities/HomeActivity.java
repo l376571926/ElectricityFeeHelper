@@ -16,8 +16,6 @@ import group.tonight.electricityfeehelper.fragments.UserListFragment;
 import group.tonight.electricityfeehelper.interfaces.OnListFragmentInteractionListener;
 
 public class HomeActivity extends AppCompatActivity implements OnListFragmentInteractionListener {
-
-    private static final String TAG = HomeActivity.class.getSimpleName();
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -39,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements OnListFragmentInt
                 case R.id.navigation_notifications:
                     mToolbar.setTitle("设置");
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frag_container, SettingFragment.newInstance("", ""))
+                            .replace(R.id.frag_container, SettingFragment.newInstance())
                             .commit();
                     return true;
             }

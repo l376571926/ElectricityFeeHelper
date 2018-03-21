@@ -44,10 +44,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * 首页
  */
 public class OrderListFragment extends Fragment {
 
@@ -162,7 +159,7 @@ public class OrderListFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 Log.e(TAG, "onQueryTextChange: " + newText);
                 if (getActivity() != null) {
-                    DaoSession daoSession = ((MainApp) getActivity().getApplication()).getDaoSession();
+                    DaoSession daoSession = MainApp.getDaoSession();
                     UserDao userDao = daoSession.getUserDao();
 
                     QueryBuilder<User> userQueryBuilder = userDao.queryBuilder()
@@ -189,7 +186,7 @@ public class OrderListFragment extends Fragment {
                 if (getActivity() == null) {
                     return;
                 }
-                UserDao userDao = ((MainApp) getActivity().getApplication()).getDaoSession().getUserDao();
+                UserDao userDao = MainApp.getDaoSession().getUserDao();
 
                 final List<User> list = userDao.queryBuilder()
                         .where(UserDao.Properties.QianFeiSum.notEq(0))
@@ -239,7 +236,7 @@ public class OrderListFragment extends Fragment {
             if (getActivity() == null) {
                 return null;
             }
-            DaoSession daoSession = ((MainApp) getActivity().getApplication()).getDaoSession();
+            DaoSession daoSession = MainApp.getDaoSession();
             OrderDao orderDao = daoSession.getOrderDao();
             UserDao userDao = daoSession.getUserDao();
 

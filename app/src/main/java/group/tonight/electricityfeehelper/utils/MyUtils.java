@@ -1,6 +1,5 @@
 package group.tonight.electricityfeehelper.utils;
 
-import android.app.Activity;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -10,9 +9,6 @@ import android.view.View;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -21,7 +17,6 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import group.tonight.electricityfeehelper.MainApp;
-import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.dao.UserBean;
 import group.tonight.electricityfeehelper.dao.UserDao;
@@ -34,6 +29,11 @@ public class MyUtils {
     public static final String LATEST_USER_URL = "https://raw.githubusercontent.com/l376571926/l376571926.github.io/master/nydlj_latest_user.json";
     public static final String LATEST_ORDER_URL = "https://raw.githubusercontent.com/l376571926/l376571926.github.io/master/nydlj_latest_order.json";
     public static final String LATEST_UPDATE_URL = "https://raw.githubusercontent.com/l376571926/l376571926.github.io/master/nydlj_latest_update.json";
+
+    /**
+     * GitHub Release Api
+     */
+    public static final String LATEST_GITHUB_UPDATE_URL = "https://api.github.com/repos/l376571926/ElectricityFeeHelper/releases/latest";
 
     /**
      * 判断是否为整数
@@ -145,38 +145,32 @@ public class MyUtils {
         return true;
     }
 
-    public static int[] saveUserListToDb(Activity activity, byte[] base64bytes) {
+    public static int[] saveUserListToDb(byte[] base64bytes) {
         String json = new String(Base64.decode(base64bytes, Base64.DEFAULT));
 
         int mAddCount = 0;
         int mUpdateCount = 0;
-        try {
-            JSONArray jsonArray1 = new JSONArray(json);
 
-            Type type = new TypeToken<List<UserBean>>() {
-            }.getType();
-            List<UserBean> userBeanList = new Gson().fromJson(jsonArray1.toString(), type);
+        Type type = new TypeToken<List<UserBean>>() {
+        }.getType();
+        List<UserBean> userBeanList = new Gson().fromJson(json, type);
 
-            for (UserBean userBean : userBeanList) {
-                int status = MyUtils.saveUserToDb(activity, userBean);
-                if (status == 1) {
-                    mAddCount++;
-                } else if (status == 2) {
-                    mUpdateCount++;
-                }
+        for (UserBean userBean : userBeanList) {
+            int status = MyUtils.saveUserToDb(userBean);
+            if (status == 1) {
+                mAddCount++;
+            } else if (status == 2) {
+                mUpdateCount++;
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
         return new int[]{mAddCount, mUpdateCount};
     }
 
     /**
-     * @param activity
      * @param userBean
      * @return 1新增2更新
      */
-    public static int saveUserToDb(Activity activity, UserBean userBean) {
+    public static int saveUserToDb(UserBean userBean) {
         String 用户编号 = userBean.get用户编号();
         String 用户名称 = userBean.get用户名称();
         String 联系方式 = userBean.get联系方式();
@@ -199,8 +193,7 @@ public class MyUtils {
         String 供电所 = userBean.get供电所();
         String 用户地址 = userBean.get用户地址();
 
-        DaoSession daoSession = ((MainApp) activity.getApplication()).getDaoSession();
-        UserDao userDao = daoSession.getUserDao();
+        UserDao userDao = MainApp.getDaoSession().getUserDao();
 
         User unique = userDao.queryBuilder()
                 .where(UserDao.Properties.UserId.eq(用户编号))

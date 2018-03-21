@@ -46,14 +46,6 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddUserFragment.
-     */
     public static AddUserFragment newInstance(String param1, String param2) {
         AddUserFragment fragment = new AddUserFragment();
         Bundle args = new Bundle();
@@ -106,7 +98,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
             mDeviceIdVg.setVisibility(View.GONE);
             mSerialIdVg.setVisibility(View.GONE);
             if (getActivity() != null) {
-                DaoSession daoSession = ((MainApp) getActivity().getApplication()).getDaoSession();
+                DaoSession daoSession = MainApp.getDaoSession();
                 UserDao userDao = daoSession.getUserDao();
                 User user = userDao.load(Long.parseLong(mParam1));
                 if (user != null) {
@@ -132,8 +124,8 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -159,7 +151,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
                 String positionId = mPositionIdEt.getText().toString();
                 String serialId = mSerialIdEt.getText().toString();
 
-                UserDao userDao = ((MainApp) getActivity().getApplication()).getDaoSession().getUserDao();
+                UserDao userDao = MainApp.getDaoSession().getUserDao();
                 User user = userDao.load(Long.parseLong(mParam1));
                 if (user == null) {
                     user = new User();

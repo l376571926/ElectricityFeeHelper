@@ -18,7 +18,7 @@ import okhttp3.OkHttpClient;
 
 public class MainApp extends Application {
 
-    private DaoSession daoSession;
+    private static DaoSession daoSession;
 
     @Override
     public void onCreate() {
@@ -38,7 +38,7 @@ public class MainApp extends Application {
         }
     }
 
-    public DaoSession getDaoSession() {
+    public static DaoSession getDaoSession() {
         daoSession.clear();
         return daoSession;
     }

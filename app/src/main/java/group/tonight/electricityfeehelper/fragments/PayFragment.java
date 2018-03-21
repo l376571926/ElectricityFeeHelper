@@ -110,7 +110,7 @@ public class PayFragment extends DialogFragment implements View.OnClickListener 
                 String remarks = mRemarksEt.getText().toString();
                 if (!TextUtils.isEmpty(shiShouStr)) {
                     if (!shiShouStr.startsWith(".")) {
-                        OrderDao orderDao = ((MainApp) getActivity().getApplication()).getDaoSession().getOrderDao();
+                        OrderDao orderDao = MainApp.getDaoSession().getOrderDao();
                         Order order = orderDao.load(Long.parseLong(mParam1));
                         if (order != null) {
                             double yingShou = order.getYingShou();

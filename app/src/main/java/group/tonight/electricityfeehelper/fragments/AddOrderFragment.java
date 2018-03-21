@@ -216,7 +216,7 @@ public class AddOrderFragment extends DialogFragment implements View.OnClickList
                     return;
                 }
                 if (getActivity() != null) {
-                    OrderDao orderDao = ((MainApp) getActivity().getApplication()).getDaoSession().getOrderDao();
+                    OrderDao orderDao = MainApp.getDaoSession().getOrderDao();
 
                     Order order = new Order();
                     order.setUid(Long.parseLong(mParam1));

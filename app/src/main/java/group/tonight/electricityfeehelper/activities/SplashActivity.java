@@ -64,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
                             int read = inputStream.read(bytes);
                             inputStream.close();
                             Log.e(TAG, "run: ----------------------" + fileName + "-----------------------------");
-                            MyUtils.saveUserListToDb(SplashActivity.this, bytes);
+                            MyUtils.saveUserListToDb(bytes);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

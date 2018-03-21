@@ -52,14 +52,14 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
     @Override
     protected void onResume() {
         super.onResume();
-        mUser = ((MainApp) getApplication()).getDaoSession().getUserDao().load(mFId);
+        mUser = MainApp.getDaoSession().getUserDao().load(mFId);
         if (mUser == null) {
             return;
         }
         String userName = mUser.getUserName();
         mUserNameTv.setText(userName);
 
-        OrderDao orderDao = ((MainApp) getApplication()).getDaoSession().getOrderDao();
+        OrderDao orderDao = MainApp.getDaoSession().getOrderDao();
         List<Order> list = orderDao.queryBuilder()
                 .where(OrderDao.Properties.Uid.eq(mFId))
                 .list();
@@ -107,7 +107,7 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
     @Override
     public void onFragmentInteraction(int result) {
         if (result == Activity.RESULT_OK) {
-            OrderDao orderDao = ((MainApp) getApplication()).getDaoSession().getOrderDao();
+            OrderDao orderDao = MainApp.getDaoSession().getOrderDao();
             List<Order> list = orderDao.queryBuilder()
                     .where(OrderDao.Properties.Uid.eq(mFId))
                     .list();

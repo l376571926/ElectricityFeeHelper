@@ -10,7 +10,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
+import com.socks.library.KLog;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 
@@ -45,14 +45,9 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * 用户库
  */
 public class UserListFragment extends Fragment implements OnFragmentInteractionListener {
-    public static final String TAG = UserListFragment.class.getSimpleName();
-
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
@@ -136,9 +131,9 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserDao userDao = ((MainApp) getActivity().getApplication()).getDaoSession().getUserDao();
+                UserDao userDao = MainApp.getDaoSession().getUserDao();
                 final List<User> list = userDao.loadAll();
-                Log.e(TAG, "onCreateView: " + list.size());
+                KLog.e("onCreateView: " + list.size());
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -173,15 +168,15 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.e(TAG, "onQueryTextSubmit: " + query);
+                KLog.e(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.e(TAG, "onQueryTextChange: " + newText);
+                KLog.e(newText);
                 if (getActivity() != null) {
-                    DaoSession daoSession = ((MainApp) getActivity().getApplication()).getDaoSession();
+                    DaoSession daoSession = MainApp.getDaoSession();
                     UserDao userDao = daoSession.getUserDao();
 
                     QueryBuilder<User> userQueryBuilder = userDao.queryBuilder()
@@ -203,7 +198,7 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_user:
-                Log.e(TAG, "onOptionsItemSelected: ");
+                KLog.e();
                 AddUserFragment addUserFragment = AddUserFragment.newInstance("", "");
                 addUserFragment.show(getChildFragmentManager(), "");
                 break;
@@ -253,21 +248,21 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
                 if (responseBody1 == null) {
                     return null;
                 }
-                MyUtils.saveUserListToDb(activity, responseBody1.bytes());
+                MyUtils.saveUserListToDb(responseBody1.bytes());
             }
-            List<User> userList = ((MainApp) activity.getApplication()).getDaoSession().getUserDao().loadAll();
+            List<User> userList = MainApp.getDaoSession().getUserDao().loadAll();
             return userList;
         }
 
         @Override
         public void onError(Call call, Exception e, int id) {
-            Log.e(TAG, "onError: " + e);
+            KLog.e(e);
         }
 
         @Override
         public void onResponse(List<User> response, int id) {
-            Log.e(TAG, "onResponse: ");
             if (response != null) {
+                KLog.e(response.size());
                 if (mMyUserRecyclerViewAdapter != null) {
                     mCountView.setText(response.size() + "");
                     mUserList.clear();
@@ -280,12 +275,12 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
 
     @Override
     public void onFragmentInteraction(int result) {
-        Log.e(TAG, "onFragmentInteraction: " + result);
+        KLog.e("onFragmentInteraction: " + result);
         FragmentActivity activity = getActivity();
         if (activity == null) {
             return;
         }
-        List<User> userList = ((MainApp) activity.getApplication()).getDaoSession().getUserDao().loadAll();
+        List<User> userList = MainApp.getDaoSession().getUserDao().loadAll();
         if (mMyUserRecyclerViewAdapter != null) {
             mCountView.setText(userList.size() + "");
             mUserList.clear();

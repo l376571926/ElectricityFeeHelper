@@ -40,22 +40,16 @@ import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SettingFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * 设置
  */
 public class SettingFragment extends Fragment implements View.OnClickListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+//    private static final String ARG_PARAM1 = "param1";
+//    private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
+//    private String mParam1;
+//    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
     private ProgressDialog mProgressDialog;
@@ -75,11 +69,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
      * @param param2 Parameter 2.
      * @return A new instance of fragment SettingFragment.
      */
-    public static SettingFragment newInstance(String param1, String param2) {
+    public static SettingFragment newInstance() {
         SettingFragment fragment = new SettingFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+//        args.putString(ARG_PARAM1, param1);
+//        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,8 +82,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -109,7 +103,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
         mProgressDialog = new ProgressDialog(getContext());
 //        mProgressDialog.setTitle("提示");
-        mProgressDialog.setMessage("用户数据准备中，请稍等");
+        mProgressDialog.setMessage("用户数据下载中，请稍等");
 
         return view;
     }
@@ -228,11 +222,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 if (responseBody1 == null) {
                     return null;
                 }
-                int[] ints = MyUtils.saveUserListToDb(activity, responseBody1.bytes());
+                int[] ints = MyUtils.saveUserListToDb(responseBody1.bytes());
                 mAddCount += ints[0];
                 mUpdateCount += ints[1];
             }
-            List<User> userList = ((MainApp) activity.getApplication()).getDaoSession().getUserDao().loadAll();
+            List<User> userList = MainApp.getDaoSession().getUserDao().loadAll();
             return userList;
         }
 
@@ -268,7 +262,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 return null;
             }
 
-            DaoSession daoSession = ((MainApp) getActivity().getApplication()).getDaoSession();
+            DaoSession daoSession = MainApp.getDaoSession();
             OrderDao orderDao = daoSession.getOrderDao();
             UserDao userDao = daoSession.getUserDao();
 
@@ -352,7 +346,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             if (response != null) {
                 if (getContext() != null) {
                     mProgressDialog.dismiss();
-                    Toast.makeText(getContext(), "欠费用户数据更新成功", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(getContext())
+                            .setMessage("更新成功，新增欠费记录数：" + response.size() + "，更新欠费记录数：" + 0)
+                            .show();
                 }
             }
         }

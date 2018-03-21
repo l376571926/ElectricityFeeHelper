@@ -69,7 +69,7 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
         mPhoneTv.setOnClickListener(this);
 
         long _id = getIntent().getLongExtra("_id", -1L);
-        DaoSession daoSession = ((MainApp) getApplication()).getDaoSession();
+        DaoSession daoSession = MainApp.getDaoSession();
         UserDao userDao = daoSession.getUserDao();
 
         mUser = userDao.load(_id);
@@ -134,7 +134,7 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     @Override
     public void onFragmentInteraction(int result) {
         if (result == Activity.RESULT_OK) {
-            DaoSession daoSession = ((MainApp) getApplication()).getDaoSession();
+            DaoSession daoSession = MainApp.getDaoSession();
             UserDao userDao = daoSession.getUserDao();
             mUser = userDao.load(mUser.getId());
 
