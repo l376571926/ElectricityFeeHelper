@@ -9,8 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +29,6 @@ import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.activities.MainActivity;
 import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.Order;
 import group.tonight.electricityfeehelper.dao.OrderDao;
@@ -60,6 +59,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     private OnFragmentInteractionListener mListener;
     private ProgressDialog mProgressDialog;
+
+    private int mAddCount;
+    private int mUpdateCount;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -106,7 +108,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         MyUtils.setBtnWaterBg(view.findViewById(R.id.update_user));
 
         mProgressDialog = new ProgressDialog(getContext());
-        mProgressDialog.setTitle("提示");
+//        mProgressDialog.setTitle("提示");
         mProgressDialog.setMessage("用户数据准备中，请稍等");
 
         return view;
@@ -129,8 +131,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         mListener = null;
     }
 
-    private static final String TAG = SettingFragment.class.getSimpleName();
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -141,7 +141,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                         .execute(new StringCallback() {
                             @Override
                             public void onError(Call call, Exception e, int id) {
-                                Log.e(TAG, "onError: " + e);
+                                KLog.e(e);
                             }
 
                             @Override
@@ -215,8 +215,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             if (activity == null) {
                 return null;
             }
+            mAddCount = 0;
+            mUpdateCount = 0;
             for (int i = 0; i < jsonArray.length(); i++) {
                 String userInfoUrl = jsonArray.getString(i);
+                KLog.e(userInfoUrl);
                 Response execute = OkHttpUtils.get()
                         .url(userInfoUrl)
                         .build()
@@ -225,8 +228,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 if (responseBody1 == null) {
                     return null;
                 }
-                byte[] bytes = responseBody1.bytes();
-                MainActivity.saveUserInfoToDb(activity, new String(Base64.decode(bytes, Base64.DEFAULT)));
+                int[] ints = MyUtils.saveUserListToDb(activity, responseBody1.bytes());
+                mAddCount += ints[0];
+                mUpdateCount += ints[1];
             }
             List<User> userList = ((MainApp) activity.getApplication()).getDaoSession().getUserDao().loadAll();
             return userList;
@@ -234,16 +238,19 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public void onError(Call call, Exception e, int id) {
-            Log.e(TAG, "onError: " + e);
+            KLog.e(e);
+            mProgressDialog.dismiss();
         }
 
         @Override
         public void onResponse(List<User> response, int id) {
-            Log.e(TAG, "onResponse: ");
             if (response != null) {
+                KLog.e(response.size());
                 if (getContext() != null) {
                     mProgressDialog.dismiss();
-                    Toast.makeText(getContext().getApplicationContext(), "获取最新用户数据成功", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(getContext())
+                            .setMessage("更新成功，新增用户数：" + mAddCount + "，更新用户数：" + mUpdateCount)
+                            .show();
                 }
             }
         }
@@ -337,7 +344,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public void onError(Call call, Exception e, int id) {
-            Log.e(TAG, "onError: " + e);
+            KLog.e(e);
         }
 
         @Override

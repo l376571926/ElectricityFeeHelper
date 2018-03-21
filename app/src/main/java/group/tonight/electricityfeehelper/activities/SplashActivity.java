@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.utils.MyUtils;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -62,9 +63,8 @@ public class SplashActivity extends AppCompatActivity {
                             byte[] bytes = new byte[size];
                             int read = inputStream.read(bytes);
                             inputStream.close();
-                            String string = new String(Base64.decode(bytes, Base64.DEFAULT));
-//                            Log.e(TAG, "run: ----------------------" + fileName + "-----------------------------");
-                            MainActivity.saveUserInfoToDb(SplashActivity.this, string);
+                            Log.e(TAG, "run: ----------------------" + fileName + "-----------------------------");
+                            MyUtils.saveUserListToDb(SplashActivity.this, bytes);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

@@ -10,7 +10,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,7 +33,6 @@ import java.util.List;
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.MyUserRecyclerViewAdapter;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.activities.MainActivity;
 import group.tonight.electricityfeehelper.activities.UserInfoActivity;
 import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.User;
@@ -255,8 +253,7 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
                 if (responseBody1 == null) {
                     return null;
                 }
-                byte[] bytes = responseBody1.bytes();
-                MainActivity.saveUserInfoToDb(activity, new String(Base64.decode(bytes, Base64.DEFAULT)));
+                MyUtils.saveUserListToDb(activity, responseBody1.bytes());
             }
             List<User> userList = ((MainApp) activity.getApplication()).getDaoSession().getUserDao().loadAll();
             return userList;
@@ -271,20 +268,11 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
         public void onResponse(List<User> response, int id) {
             Log.e(TAG, "onResponse: ");
             if (response != null) {
-//                if (getContext() != null) {
-//                    mProgressDialog.dismiss();
-//                    Toast.makeText(getContext().getApplicationContext(), "获取最新用户数据成功", Toast.LENGTH_SHORT).show();
-//                }
-
                 if (mMyUserRecyclerViewAdapter != null) {
                     mCountView.setText(response.size() + "");
                     mUserList.clear();
                     mUserList.addAll(response);
                     mMyUserRecyclerViewAdapter.notifyDataSetChanged();
-//                    mAdapter.refresh(response);
-//                    if (mProgressDialog != null) {
-//                        mProgressDialog.dismiss();
-//                    }
                 }
             }
         }
@@ -303,10 +291,6 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
             mUserList.clear();
             mUserList.addAll(userList);
             mMyUserRecyclerViewAdapter.notifyDataSetChanged();
-//                    mAdapter.refresh(response);
-//                    if (mProgressDialog != null) {
-//                        mProgressDialog.dismiss();
-//                    }
         }
     }
 }
