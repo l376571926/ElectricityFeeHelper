@@ -3,6 +3,8 @@ package group.tonight.electricityfeehelper.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.socks.library.KLog;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -48,12 +51,10 @@ import okhttp3.ResponseBody;
  * create an instance of this fragment.
  */
 public class SettingFragment extends Fragment implements View.OnClickListener {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -72,7 +73,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
      * @param param2 Parameter 2.
      * @return A new instance of fragment SettingFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SettingFragment newInstance(String param1, String param2) {
         SettingFragment fragment = new SettingFragment();
         Bundle args = new Bundle();
@@ -100,6 +100,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         view.findViewById(R.id.update).setOnClickListener(this);
         view.findViewById(R.id.update_order).setOnClickListener(this);
         view.findViewById(R.id.update_user).setOnClickListener(this);
+
+        MyUtils.setBtnWaterBg(view.findViewById(R.id.update));
+        MyUtils.setBtnWaterBg(view.findViewById(R.id.update_order));
+        MyUtils.setBtnWaterBg(view.findViewById(R.id.update_user));
 
         mProgressDialog = new ProgressDialog(getContext());
         mProgressDialog.setTitle("提示");
@@ -149,9 +153,24 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                                     String versionName = jsonObject.getString("versionName");
                                     String description = jsonObject.getString("description");
 
-                                    Uri uri = Uri.parse(url);
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                    startActivity(intent);
+                                    KLog.e(versionCode + " " + versionName + " " + description);
+
+                                    PackageManager packageManager = getActivity().getPackageManager();
+                                    PackageInfo packageInfo = null;
+                                    try {
+                                        packageInfo = packageManager.getPackageInfo(getActivity().getPackageName(), 0);
+                                    } catch (PackageManager.NameNotFoundException e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (packageInfo != null) {
+                                        if (packageInfo.versionCode != versionCode) {
+                                            Uri uri = Uri.parse(url);
+                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                            startActivity(intent);
+                                        } else {
+                                            Toast.makeText(getContext().getApplicationContext(), "已是最新版本", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -226,13 +245,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                     mProgressDialog.dismiss();
                     Toast.makeText(getContext().getApplicationContext(), "获取最新用户数据成功", Toast.LENGTH_SHORT).show();
                 }
-
-//                if (mAdapter != null) {
-//                    mAdapter.refresh(response);
-//                    if (mProgressDialog != null) {
-//                        mProgressDialog.dismiss();
-//                    }
-//                }
             }
         }
     };
@@ -335,9 +347,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                     mProgressDialog.dismiss();
                     Toast.makeText(getContext(), "欠费用户数据更新成功", Toast.LENGTH_SHORT).show();
                 }
-//                if (mAdapter != null) {
-//                    mAdapter.refresh(response);
-//                }
             }
         }
     };

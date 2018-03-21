@@ -55,9 +55,7 @@ import okhttp3.ResponseBody;
 public class UserListFragment extends Fragment implements OnFragmentInteractionListener {
     public static final String TAG = UserListFragment.class.getSimpleName();
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private MyUserRecyclerViewAdapter mMyUserRecyclerViewAdapter;
@@ -73,7 +71,6 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
     public UserListFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static UserListFragment newInstance(int columnCount) {
         UserListFragment fragment = new UserListFragment();

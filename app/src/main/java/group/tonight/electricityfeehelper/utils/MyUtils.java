@@ -1,5 +1,9 @@
 package group.tonight.electricityfeehelper.utils;
 
+import android.content.res.Resources;
+import android.util.TypedValue;
+import android.view.View;
+
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -32,4 +36,27 @@ public class MyUtils {
     }
 
     public static SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyyMM", Locale.getDefault());
+
+    /**
+     * 设置View为有水波纹点击效果
+     *
+     * @param itemView
+     */
+    public static void setBtnWaterBg(View itemView) {
+        /**
+         * 设置水波纹背景
+         */
+        if (itemView.getBackground() == null) {
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = itemView.getContext().getTheme();
+            int top = itemView.getPaddingTop();
+            int bottom = itemView.getPaddingBottom();
+            int left = itemView.getPaddingLeft();
+            int right = itemView.getPaddingRight();
+            if (theme.resolveAttribute(android.R.attr.selectableItemBackground, typedValue, true)) {
+                itemView.setBackgroundResource(typedValue.resourceId);
+            }
+            itemView.setPadding(left, top, right, bottom);
+        }
+    }
 }
