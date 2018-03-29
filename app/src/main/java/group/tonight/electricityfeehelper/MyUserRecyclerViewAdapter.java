@@ -32,6 +32,7 @@ public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecycl
     public void onBindViewHolder(final ViewHolder holder, int position) {
         User user = mValues.get(position);
         holder.mItem = user;
+        holder.mPowerMeterIdView.setText(user.getPowerMeterId());
         holder.mIdView.setText(user.getUserId());
         holder.mContentView.setText(user.getUserName());
         holder.mPhoneView.setText(user.getUserPhone());
@@ -59,10 +60,12 @@ public class MyUserRecyclerViewAdapter extends RecyclerView.Adapter<MyUserRecycl
         public final TextView mContentView;
         public User mItem;
         public final TextView mPhoneView;
+        private final TextView mPowerMeterIdView;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            mPowerMeterIdView = (TextView) view.findViewById(R.id.power_meter_id);
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
             mPhoneView = (TextView) view.findViewById(R.id.phone);

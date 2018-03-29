@@ -163,7 +163,7 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
         inflater.inflate(R.menu.menu_user_list_fragment, menu);
 
         SearchView mSearchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        mSearchView.setQueryHint("请输入用户编号或者用户名称");
+        mSearchView.setQueryHint("电能表编号、姓名、手机、用户编号");
 //        mSearchView.setIconifiedByDefault(false);//false表示加载后默认为搜索框输入状态
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -180,7 +180,12 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
                     UserDao userDao = daoSession.getUserDao();
 
                     QueryBuilder<User> userQueryBuilder = userDao.queryBuilder()
-                            .whereOr(UserDao.Properties.UserId.like("%" + newText + "%"), UserDao.Properties.UserName.like("%" + newText + "%"));
+                            .whereOr(
+                                    UserDao.Properties.UserId.like("%" + newText + "%")//匹配用户ID
+                                    , UserDao.Properties.UserName.like("%" + newText + "%")//匹配用户姓名
+                                    , UserDao.Properties.PowerMeterId.like("%" + newText + "%")//匹配电能表编号
+                                    , UserDao.Properties.UserPhone.like("%" + newText + "%")//匹配用户手机
+                            );
 
                     List<User> list = userQueryBuilder
                             .limit(50)

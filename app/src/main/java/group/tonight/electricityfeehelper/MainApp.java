@@ -3,13 +3,13 @@ package group.tonight.electricityfeehelper;
 import android.app.Application;
 
 import com.facebook.stetho.Stetho;
-import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import org.greenrobot.greendao.database.Database;
 
 import group.tonight.electricityfeehelper.dao.DaoMaster;
 import group.tonight.electricityfeehelper.dao.DaoSession;
+import group.tonight.electricityfeehelper.utils.CrashHandler;
 import okhttp3.OkHttpClient;
 
 /**
@@ -32,10 +32,12 @@ public class MainApp extends Application {
         if (BuildConfig.DEBUG) {
             Stetho.initializeWithDefaults(this);
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .addNetworkInterceptor(new StethoInterceptor())
+//                    .addNetworkInterceptor(new StethoInterceptor())
                     .build();
             OkHttpUtils.initClient(okHttpClient);
         }
+
+        CrashHandler.getInstance().init(this);
     }
 
     public static DaoSession getDaoSession() {

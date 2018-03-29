@@ -9,17 +9,26 @@
     android:paddingRight="?attr/listPreferredItemPaddingRight">
 
     <TextView
-        android:id="@+id/id"
+        android:id="@+id/power_meter_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
+        tools:text="433000100000005622018" />
+
+    <TextView
+        android:id="@+id/id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/phone"
+        android:textAppearance="?attr/textAppearanceListItemSecondary"
         tools:text="9502057361" />
 
     <TextView
         android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/id"
+        android:layout_below="@id/phone"
         android:textAppearance="?attr/textAppearanceListItemSecondary"
         tools:text="邓臣艺" />
 
@@ -28,7 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/id"
         android:textAppearance="?attr/textAppearanceListItemSecondary"
         tools:text="13800138000" />
+
+
 </RelativeLayout>

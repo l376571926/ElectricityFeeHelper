@@ -2,10 +2,8 @@ package group.tonight.electricityfeehelper.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +27,7 @@ import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.activities.HomeActivity;
 import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.Order;
 import group.tonight.electricityfeehelper.dao.OrderDao;
@@ -61,14 +60,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingFragment.
-     */
     public static SettingFragment newInstance() {
         SettingFragment fragment = new SettingFragment();
         Bundle args = new Bundle();
@@ -142,7 +133,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                             public void onResponse(String response, int id) {
                                 try {
                                     JSONObject jsonObject = new JSONObject(response);
-                                    String url = jsonObject.getString("url");
+                                    String apkUrl = jsonObject.getString("url");
                                     int versionCode = jsonObject.getInt("versionCode");
                                     String versionName = jsonObject.getString("versionName");
                                     String description = jsonObject.getString("description");
@@ -158,9 +149,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                                     }
                                     if (packageInfo != null) {
                                         if (packageInfo.versionCode != versionCode) {
-                                            Uri uri = Uri.parse(url);
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                            startActivity(intent);
+//                                            Uri uri = Uri.parse(apkUrl);
+//                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//                                            startActivity(intent);
+
+                                            if (getActivity() != null) {
+                                                if (getActivity() instanceof HomeActivity) {
+                                                    HomeActivity homeActivity = (HomeActivity) getActivity();
+                                                    homeActivity.versionUpdate(apkUrl);
+                                                }
+                                            }
                                         } else {
                                             Toast.makeText(getContext().getApplicationContext(), "已是最新版本", Toast.LENGTH_SHORT).show();
                                         }
