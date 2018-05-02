@@ -50,8 +50,8 @@ public class SplashActivity extends AppCompatActivity {
                             "nydlj_503.txt",
                             "nydlj_513.txt",
                             "nydlj_601.txt",
-                            "nydlj_703.txt"
-//                            "nydlj_735.txt"
+                            "nydlj_703.txt",
+                            "nydlj_735.txt"
                     };
                     int length = strings.length;
                     mInitDataPb.setMax(length);

@@ -13,13 +13,13 @@
     <TextView
         android:id="@+id/update"
         android:layout_width="match_parent"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
+        android:layout_height="?android:listPreferredItemHeightSmall"
         android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
         android:gravity="center_vertical"
-        android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-        android:paddingRight="?attr/listPreferredItemPaddingRight"
+        android:paddingLeft="?android:listPreferredItemPaddingLeft"
+        android:paddingRight="?android:listPreferredItemPaddingRight"
         android:text="版本更新"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textAppearance="?android:textAppearanceListItem" />
 
     <TextView
         android:layout_width="match_parent"
@@ -29,29 +29,33 @@
     <TextView
         android:id="@+id/update_order"
         android:layout_width="match_parent"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
+        android:layout_height="?android:listPreferredItemHeightSmall"
         android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
         android:gravity="center_vertical"
-        android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-        android:paddingRight="?attr/listPreferredItemPaddingRight"
+        android:paddingLeft="?android:listPreferredItemPaddingLeft"
+        android:paddingRight="?android:listPreferredItemPaddingRight"
         android:text="欠费清单更新"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textAppearance="?android:textAppearanceListItem"
+        android:visibility="gone"
+        tools:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@android:drawable/divider_horizontal_bright" />
+        android:background="@android:drawable/divider_horizontal_bright"
+        android:visibility="gone"
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/update_user"
         android:layout_width="match_parent"
-        android:layout_height="?attr/listPreferredItemHeightSmall"
+        android:layout_height="?android:listPreferredItemHeightSmall"
         android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
         android:gravity="center_vertical"
-        android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-        android:paddingRight="?attr/listPreferredItemPaddingRight"
+        android:paddingLeft="?android:listPreferredItemPaddingLeft"
+        android:paddingRight="?android:listPreferredItemPaddingRight"
         android:text="用户数据更新"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textAppearance="?android:textAppearanceListItem" />
 
     <TextView
         android:layout_width="match_parent"

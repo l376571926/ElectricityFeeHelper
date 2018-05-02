@@ -21,7 +21,6 @@ import com.socks.library.KLog;
 
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.fragments.OrderListFragment;
 import group.tonight.electricityfeehelper.fragments.SettingFragment;
 import group.tonight.electricityfeehelper.fragments.UserListFragment;
 import group.tonight.electricityfeehelper.interfaces.OnListFragmentInteractionListener;
@@ -35,16 +34,19 @@ public class HomeActivity extends AppCompatActivity implements OnListFragmentInt
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mToolbar.setTitle("首页");
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frag_container, OrderListFragment.newInstance(1))
-                            .commit();
-                    return true;
-                case R.id.navigation_dashboard:
-                    mToolbar.setTitle("用户库");
+//                    getSupportFragmentManager().beginTransaction()
+//                            .replace(R.id.frag_container, OrderListFragment.newInstance(1))
+//                            .commit();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frag_container, UserListFragment.newInstance(1))
                             .commit();
                     return true;
+//                case R.id.navigation_dashboard:
+//                    mToolbar.setTitle("用户库");
+//                    getSupportFragmentManager().beginTransaction()
+//                            .replace(R.id.frag_container, UserListFragment.newInstance(1))
+//                            .commit();
+//                    return true;
                 case R.id.navigation_notifications:
                     mToolbar.setTitle("设置");
                     getSupportFragmentManager().beginTransaction()
@@ -70,7 +72,7 @@ public class HomeActivity extends AppCompatActivity implements OnListFragmentInt
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frag_container, OrderListFragment.newInstance(1))
+                .replace(R.id.frag_container, UserListFragment.newInstance(1))
                 .commit();
     }
 

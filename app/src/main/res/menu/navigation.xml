@@ -6,10 +6,12 @@
         android:icon="@drawable/ic_home_black_24dp"
         android:title="首页" />
 
+    <!--
     <item
         android:id="@+id/navigation_dashboard"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="用户库" />
+    -->
 
     <item
         android:id="@+id/navigation_notifications"
