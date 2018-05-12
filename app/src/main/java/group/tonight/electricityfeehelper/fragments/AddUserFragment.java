@@ -25,11 +25,9 @@ import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListen
  */
 public class AddUserFragment extends DialogFragment implements View.OnClickListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_PARAM1 = "userId";
 
-    private String mParam1;
-    private String mParam2;
+    private long mUserId;
 
     private OnFragmentInteractionListener mListener;
     private EditText mUserIdEt;
@@ -46,11 +44,10 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
         // Required empty public constructor
     }
 
-    public static AddUserFragment newInstance(String param1, String param2) {
+    public static AddUserFragment newInstance(long userId) {
         AddUserFragment fragment = new AddUserFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putLong(ARG_PARAM1, userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,8 +56,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mUserId = getArguments().getLong(ARG_PARAM1);
         }
     }
 
@@ -91,16 +87,15 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
         rootView.findViewById(R.id.cancel).setOnClickListener(this);
         rootView.findViewById(R.id.ok).setOnClickListener(this);
 
-
-        if (!TextUtils.isEmpty(mParam1)) {
+        if (mUserId != 0) {
             mDialogTitleTv.setText("修改用户资料");
             mUserIdVg.setVisibility(View.GONE);
-            mDeviceIdVg.setVisibility(View.GONE);
+//            mDeviceIdVg.setVisibility(View.GONE);
             mSerialIdVg.setVisibility(View.GONE);
             if (getActivity() != null) {
                 DaoSession daoSession = MainApp.getDaoSession();
                 UserDao userDao = daoSession.getUserDao();
-                User user = userDao.load(Long.parseLong(mParam1));
+                User user = userDao.load(mUserId);
                 if (user != null) {
                     mUserIdEt.setText(user.getUserId());
                     mUserNameEt.setText(user.getUserName());
@@ -152,7 +147,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
                 String serialId = mSerialIdEt.getText().toString();
 
                 UserDao userDao = MainApp.getDaoSession().getUserDao();
-                User user = userDao.load(Long.parseLong(mParam1));
+                User user = userDao.load(mUserId);
                 if (user == null) {
                     user = new User();
                 }
@@ -175,7 +170,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
                 user.setMeterReadingId(positionId);
                 user.setPowerLineId(serialId);
 
-                if (TextUtils.isEmpty(mParam1)) {
+                if (mUserId == 0) {
                     user.setCreateTime(currentTimeMillis);
                     userDao.insert(user);
                 } else {

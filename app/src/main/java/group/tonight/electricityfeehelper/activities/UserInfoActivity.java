@@ -124,8 +124,7 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit_user_info) {
             if (mUser != null) {
-                AddUserFragment addUserFragment = AddUserFragment.newInstance(mUser.getId() + "", "");
-                addUserFragment.show(getSupportFragmentManager(), "");
+                AddUserFragment.newInstance(mUser.getId()).show(getSupportFragmentManager(), "");
             }
         }
         return super.onOptionsItemSelected(item);
@@ -137,7 +136,6 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
             DaoSession daoSession = MainApp.getDaoSession();
             UserDao userDao = daoSession.getUserDao();
             mUser = userDao.load(mUser.getId());
-
             initData();
         }
     }
@@ -153,20 +151,6 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
                 if (TextUtils.equals("0", phone)) {
                     return;
                 }
-//                Intent intent = new Intent(Intent.ACTION_CALL);
-//                Uri data = Uri.parse("tel:" + phone);
-//                intent.setData(data);
-//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-//                    //    ActivityCompat#requestPermissions
-//                    // here to request the missing permissions, and then overriding
-//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                    //                                          int[] grantResults)
-//                    // to handle the case where the user grants the permission. See the documentation
-//                    // for ActivityCompat#requestPermissions for more details.
-//                    return;
-//                }
-//                startActivity(intent);
-
                 Intent intent = new Intent(Intent.ACTION_DIAL);
                 Uri data = Uri.parse("tel:" + phone);
                 intent.setData(data);

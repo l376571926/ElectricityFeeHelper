@@ -3,6 +3,7 @@ package group.tonight.electricityfeehelper.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -18,29 +19,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.AbsCallback;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.socks.library.KLog;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.Callback;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
-import group.tonight.electricityfeehelper.MyUserRecyclerViewAdapter;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.activities.UserInfoActivity;
 import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.dao.UserDao;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
-import group.tonight.electricityfeehelper.interfaces.OnListFragmentInteractionListener;
 import group.tonight.electricityfeehelper.utils.MyUtils;
-import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -50,17 +49,10 @@ import okhttp3.ResponseBody;
 public class UserListFragment extends Fragment implements OnFragmentInteractionListener {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
-    private MyUserRecyclerViewAdapter mMyUserRecyclerViewAdapter;
-    private List<User> mUserList;
     private TextView mCountView;
     private RecyclerView mListView;
     private RefreshLayout mRefreshLayout;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public UserListFragment() {
     }
 
@@ -83,7 +75,7 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_list, container, false);
         mRefreshLayout = (RefreshLayout) view.findViewById(R.id.smart_refresh_layout);
@@ -96,10 +88,43 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
             @Override
             public void onRefresh(RefreshLayout refreshLayout) {
                 refreshLayout.finishRefresh();
-                OkHttpUtils.get()
-                        .url(MyUtils.LATEST_USER_URL)
-                        .build()
-                        .execute(mUserListCallback);
+                OkGo.<List<User>>get(MyUtils.LATEST_USER_URL)
+                        .execute(new AbsCallback<List<User>>() {
+                            @Override
+                            public void onSuccess(com.lzy.okgo.model.Response<List<User>> response) {
+                                List<User> userList = response.body();
+                                if (userList != null) {
+                                    KLog.e(userList.size());
+                                    mCountView.setText(userList.size() + "");
+                                    mBaseQuickAdapter.replaceData(userList);
+                                }
+                            }
+
+                            @Override
+                            public List<User> convertResponse(Response response) throws Throwable {
+                                ResponseBody responseBody = response.body();
+                                if (responseBody == null) {
+                                    return null;
+                                }
+                                String json = responseBody.string();
+                                JSONArray jsonArray = new JSONArray(json);
+                                FragmentActivity activity = getActivity();
+                                if (activity == null) {
+                                    return null;
+                                }
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    String userInfoUrl = jsonArray.getString(i);
+                                    Response execute = OkGo.<byte[]>get(userInfoUrl)
+                                            .execute();
+                                    ResponseBody responseBody1 = execute.body();
+                                    if (responseBody1 == null) {
+                                        return null;
+                                    }
+                                    MyUtils.saveUserListToDb(responseBody1.bytes());
+                                }
+                                return MainApp.getDaoSession().getUserDao().loadAll();
+                            }
+                        });
             }
         });
         mListView = (RecyclerView) view.findViewById(R.id.list);
@@ -117,17 +142,15 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
         } else {
             mListView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        mUserList = new ArrayList<>();
-        mMyUserRecyclerViewAdapter = new MyUserRecyclerViewAdapter(mUserList, new OnListFragmentInteractionListener() {
+        mListView.setAdapter(mBaseQuickAdapter);
+        mBaseQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onListFragmentInteraction(User item) {
-                Intent intent = new Intent(context, UserInfoActivity.class);
-                intent.putExtra("_id", item.getId());
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Intent intent = new Intent(view.getContext(), UserInfoActivity.class);
+                intent.putExtra("_id", ((User) adapter.getItem(position)).getId());
                 startActivity(intent);
             }
         });
-        mListView.setAdapter(mMyUserRecyclerViewAdapter);
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -139,9 +162,7 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
                         @Override
                         public void run() {
                             mCountView.setText(list.size() + "");
-                            mUserList.clear();
-                            mUserList.addAll(list);
-                            mMyUserRecyclerViewAdapter.notifyDataSetChanged();
+                            mBaseQuickAdapter.replaceData(list);
                         }
                     });
                 }
@@ -190,9 +211,7 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
                     List<User> list = userQueryBuilder
                             .limit(50)
                             .list();
-                    mUserList.clear();
-                    mUserList.addAll(list);
-                    mMyUserRecyclerViewAdapter.notifyDataSetChanged();
+                    mBaseQuickAdapter.replaceData(list);
                 }
                 return false;
             }
@@ -203,80 +222,13 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_user:
-                KLog.e();
-                AddUserFragment addUserFragment = AddUserFragment.newInstance("", "");
-                addUserFragment.show(getChildFragmentManager(), "");
+                AddUserFragment.newInstance(0).show(getChildFragmentManager(), "");
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    private Callback<List<User>> mUserListCallback = new Callback<List<User>>() {
-        @Override
-        public List<User> parseNetworkResponse(Response response, int id) throws Exception {
-            ResponseBody responseBody = response.body();
-            if (responseBody == null) {
-                return null;
-            }
-            String json = responseBody.string();
-            JSONArray jsonArray = new JSONArray(json);
-            FragmentActivity activity = getActivity();
-            if (activity == null) {
-                return null;
-            }
-            for (int i = 0; i < jsonArray.length(); i++) {
-                String userInfoUrl = jsonArray.getString(i);
-                Response execute = OkHttpUtils.get()
-                        .url(userInfoUrl)
-                        .build()
-                        .execute();
-                ResponseBody responseBody1 = execute.body();
-                if (responseBody1 == null) {
-                    return null;
-                }
-                MyUtils.saveUserListToDb(responseBody1.bytes());
-            }
-            List<User> userList = MainApp.getDaoSession().getUserDao().loadAll();
-            return userList;
-        }
-
-        @Override
-        public void onError(Call call, Exception e, int id) {
-            KLog.e(e);
-        }
-
-        @Override
-        public void onResponse(List<User> response, int id) {
-            if (response != null) {
-                KLog.e(response.size());
-                if (mMyUserRecyclerViewAdapter != null) {
-                    mCountView.setText(response.size() + "");
-                    mUserList.clear();
-                    mUserList.addAll(response);
-                    mMyUserRecyclerViewAdapter.notifyDataSetChanged();
-                }
-            }
-        }
-    };
 
     @Override
     public void onFragmentInteraction(int result) {
@@ -286,11 +238,17 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
             return;
         }
         List<User> userList = MainApp.getDaoSession().getUserDao().loadAll();
-        if (mMyUserRecyclerViewAdapter != null) {
-            mCountView.setText(userList.size() + "");
-            mUserList.clear();
-            mUserList.addAll(userList);
-            mMyUserRecyclerViewAdapter.notifyDataSetChanged();
-        }
+        mCountView.setText(userList.size() + "");
+        mBaseQuickAdapter.replaceData(userList);
     }
+
+    private BaseQuickAdapter<User, BaseViewHolder> mBaseQuickAdapter = new BaseQuickAdapter<User, BaseViewHolder>(R.layout.fragment_user) {
+        @Override
+        protected void convert(BaseViewHolder helper, User item) {
+            helper.setText(R.id.power_meter_id, item.getPowerMeterId());
+            helper.setText(R.id.id, item.getUserId());
+            helper.setText(R.id.content, item.getUserName());
+            helper.setText(R.id.phone, item.getUserPhone());
+        }
+    };
 }

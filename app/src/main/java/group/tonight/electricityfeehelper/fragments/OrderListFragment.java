@@ -17,29 +17,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.AbsCallback;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.Callback;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
-import group.tonight.electricityfeehelper.MyOrderRecyclerViewAdapter;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.Order;
 import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.dao.UserDao;
-import group.tonight.electricityfeehelper.interfaces.OnListFragmentInteractionListener;
 import group.tonight.electricityfeehelper.utils.MyUtils;
-import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -51,17 +49,10 @@ public class OrderListFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private static final String TAG = OrderListFragment.class.getSimpleName();
     private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
-    private MyOrderRecyclerViewAdapter mMyOrderRecyclerViewAdapter;
-    private List<User> mUserList;
     private RecyclerView mListView;
     private TextView mCountView;
     private RefreshLayout mRefreshLayout;
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
     public OrderListFragment() {
     }
 
@@ -97,10 +88,8 @@ public class OrderListFragment extends Fragment {
             @Override
             public void onRefresh(RefreshLayout refreshLayout) {
                 refreshLayout.finishRefresh();
-                OkHttpUtils.get()
-                        .url(MyUtils.LATEST_ORDER_URL)
-                        .build()
-                        .execute(mOrderListCallback);
+                OkGo.<List<User>>get(MyUtils.LATEST_ORDER_URL)
+                        .execute(mAbsCallback);
             }
         });
         mListView = (RecyclerView) view.findViewById(R.id.list);
@@ -117,19 +106,8 @@ public class OrderListFragment extends Fragment {
         } else {
             mListView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-
-        mUserList = new ArrayList<>();
-        mMyOrderRecyclerViewAdapter = new MyOrderRecyclerViewAdapter(mUserList, mListener);
-        mListView.setAdapter(mMyOrderRecyclerViewAdapter);
-
-//        OkHttpUtils.get()
-//                .url(MyUtils.LATEST_ORDER_URL)
-//                .build()
-//                .execute(mOrderListCallback);
-
+        mListView.setAdapter(mBaseQuickAdapter);
         loadQianFeiData();
-
-
         return view;
     }
 
@@ -170,9 +148,7 @@ public class OrderListFragment extends Fragment {
                     List<User> list = userQueryBuilder
                             .limit(50)
                             .list();
-                    mUserList.clear();
-                    mUserList.addAll(list);
-                    mMyOrderRecyclerViewAdapter.notifyDataSetChanged();
+                    mBaseQuickAdapter.replaceData(list);
                 }
                 return false;
             }
@@ -197,36 +173,22 @@ public class OrderListFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mUserList.clear();
-                        mUserList.addAll(list);
                         mCountView.setText(list.size() + "");
-                        mMyOrderRecyclerViewAdapter.notifyDataSetChanged();
+                        mBaseQuickAdapter.replaceData(list);
                     }
                 });
             }
         }).start();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    private Callback<List<User>> mOrderListCallback = new Callback<List<User>>() {
+    private AbsCallback<List<User>> mAbsCallback = new AbsCallback<List<User>>() {
         @Override
-        public List<User> parseNetworkResponse(Response response, int id) throws Exception {
+        public void onSuccess(com.lzy.okgo.model.Response<List<User>> response) {
+            loadQianFeiData();
+        }
+
+        @Override
+        public List<User> convertResponse(Response response) throws Throwable {
             ResponseBody responseBody = response.body();
             if (responseBody == null) {
                 return null;
@@ -242,9 +204,7 @@ public class OrderListFragment extends Fragment {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 String orderUrl = jsonArray.getString(i);
-                Response execute = OkHttpUtils.get()
-                        .url(orderUrl)
-                        .build()
+                Response execute = OkGo.<byte[]>get(orderUrl)
                         .execute();
                 ResponseBody responseBody1 = execute.body();
                 if (responseBody1 == null) {
@@ -308,23 +268,16 @@ public class OrderListFragment extends Fragment {
             }
             return null;
         }
+    };
 
+    private BaseQuickAdapter<User, BaseViewHolder> mBaseQuickAdapter = new BaseQuickAdapter<User, BaseViewHolder>(R.layout.fragment_order) {
         @Override
-        public void onError(Call call, Exception e, int id) {
-            Log.e(TAG, "onError: " + e);
-        }
-
-        @Override
-        public void onResponse(List<User> response, int id) {
-//            if (response != null) {
-//                if (mMyOrderRecyclerViewAdapter != null) {
-//                    mCountView.setText(response.size() + "");
-//                    mUserList.clear();
-//                    mUserList.addAll(response);
-//                    mMyOrderRecyclerViewAdapter.notifyDataSetChanged();
-//                }
-//            }
-            loadQianFeiData();
+        protected void convert(BaseViewHolder helper, User item) {
+            helper.setText(R.id.id, item.getUserId());
+            helper.setText(R.id.content, item.getUserName());
+            helper.setText(R.id.phone, item.getUserPhone());
+            helper.setText(R.id.address, item.getUserAddress());
+            helper.setText(R.id.money, getString(R.string.qian_fei_sum_place_holder, item.getQianFeiSum() + ""));
         }
     };
 }

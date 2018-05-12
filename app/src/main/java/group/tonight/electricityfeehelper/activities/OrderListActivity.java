@@ -8,8 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.TextView;
+
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 
 import java.util.List;
 
@@ -21,13 +23,11 @@ import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.fragments.AddOrderFragment;
 import group.tonight.electricityfeehelper.fragments.PayFragment;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
-import group.tonight.electricityfeehelper.utils.BaseRecyclerAdapter;
-import group.tonight.electricityfeehelper.utils.SmartViewHolder;
 
 /**
  * 用户欠费记录
  */
-public class OrderListActivity extends BackEnableActivity implements OnFragmentInteractionListener, View.OnClickListener, AdapterView.OnItemClickListener {
+public class OrderListActivity extends BackEnableActivity implements OnFragmentInteractionListener, View.OnClickListener {
 
     private RecyclerView mOrderRv;
     private Long mFId;
@@ -40,13 +40,25 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
         mUserNameTv = (TextView) findViewById(R.id.user_name);
         mOrderRv = (RecyclerView) findViewById(R.id.order_rv);
         mOrderRv.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        mOrderRv.setAdapter(mAdapter);
+        mOrderRv.setAdapter(mBaseQuickAdapter);
 
         findViewById(R.id.detail).setOnClickListener(this);
 
         mFId = getIntent().getLongExtra("_id", -1);
 
-        mAdapter.setOnItemClickListener(this);
+        mBaseQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                Order order = (Order) adapter.getItem(position);
+                if (order != null) {
+                    double qianFei = order.getQianFei();
+                    if (qianFei != 0) {
+                        PayFragment payFragment = PayFragment.newInstance(order.getId() + "", "");
+                        payFragment.show(getSupportFragmentManager(), "");
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -63,7 +75,7 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
         List<Order> list = orderDao.queryBuilder()
                 .where(OrderDao.Properties.Uid.eq(mFId))
                 .list();
-        mAdapter.refresh(list);
+        mBaseQuickAdapter.replaceData(list);
     }
 
     @Override
@@ -76,16 +88,12 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
         return "用户欠费记录";
     }
 
-
-    private BaseRecyclerAdapter<Order> mAdapter = new BaseRecyclerAdapter<Order>(R.layout.list_item_user_detail) {
+    private BaseQuickAdapter<Order, BaseViewHolder> mBaseQuickAdapter = new BaseQuickAdapter<Order, BaseViewHolder>(R.layout.list_item_user_detail) {
         @Override
-        protected void onBindViewHolder(SmartViewHolder holder, Order model, int position) {
-            long createTime = model.getCreateTime();
-            double qianFei = model.getQianFei();
-            String orderDate = model.getOrderDate();
+        protected void convert(BaseViewHolder helper, Order item) {
+            helper.setText(R.id.date, item.getOrderDate());
+            helper.setText(R.id.money, getString(R.string.qian_fei_place_holder, item.getQianFei() + ""));
 
-            holder.text(R.id.date, orderDate);
-            holder.text(R.id.money, getString(R.string.qian_fei_place_holder, qianFei + ""));
         }
     };
 
@@ -111,7 +119,7 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
             List<Order> list = orderDao.queryBuilder()
                     .where(OrderDao.Properties.Uid.eq(mFId))
                     .list();
-            mAdapter.refresh(list);
+            mBaseQuickAdapter.replaceData(list);
         }
     }
 
@@ -125,19 +133,6 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
                 break;
             default:
                 break;
-        }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Object item = mAdapter.getItem(position);
-        if (item instanceof Order) {
-            Order order = (Order) item;
-            double qianFei = order.getQianFei();
-            if (qianFei != 0) {
-                PayFragment payFragment = PayFragment.newInstance(order.getId() + "", "");
-                payFragment.show(getSupportFragmentManager(), "");
-            }
         }
     }
 }

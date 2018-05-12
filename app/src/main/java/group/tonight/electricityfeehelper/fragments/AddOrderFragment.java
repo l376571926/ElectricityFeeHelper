@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -21,21 +21,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 import group.tonight.electricityfeehelper.MainApp;
+import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.dao.Order;
 import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
-import group.tonight.electricityfeehelper.dao.Order;
-import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.utils.MyUtils;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AddOrderFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AddOrderFragment extends DialogFragment implements View.OnClickListener {
 
     private static final String TAG = AddOrderFragment.class.getSimpleName();
@@ -59,14 +50,6 @@ public class AddOrderFragment extends DialogFragment implements View.OnClickList
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddOrderFragment.
-     */
     public static AddOrderFragment newInstance(String param1, String param2) {
         AddOrderFragment fragment = new AddOrderFragment();
         Bundle args = new Bundle();
@@ -87,7 +70,7 @@ public class AddOrderFragment extends DialogFragment implements View.OnClickList
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_add_order, container, false);

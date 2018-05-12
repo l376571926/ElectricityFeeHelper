@@ -76,12 +76,12 @@ public class SplashActivity extends AppCompatActivity {
                             }
                         });
                     }
-                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                    startActivity(new Intent(SplashActivity.this, IndexActivity.class));
                     finish();
                 }
             }).start();
         } else {
-            startActivity(new Intent(this, HomeActivity.class));
+            startActivity(new Intent(this, IndexActivity.class));
             finish();
         }
     }
