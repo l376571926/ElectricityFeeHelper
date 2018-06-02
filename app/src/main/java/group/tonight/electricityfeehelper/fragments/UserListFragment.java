@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -29,7 +31,10 @@ import com.socks.library.KLog;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
@@ -168,6 +173,24 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
                 }
             }
         }).start();
+        OkGo.<List<User>>get("http://192.168.1.121:8080/getallpoweruserinfo")
+                .execute(new AbsCallback<List<User>>() {
+                    @Override
+                    public void onSuccess(com.lzy.okgo.model.Response<List<User>> response) {
+                        KLog.e();
+                    }
+
+                    @Override
+                    public List<User> convertResponse(Response response) throws Throwable {
+                        JSONObject jsonObject = new JSONObject(response.body().string());
+                        if (jsonObject.getInt("code") == 0) {
+                            Type type = new TypeToken<List<User>>() {
+                            }.getType();
+                            return new Gson().fromJson(jsonObject.getJSONArray("data").toString(), type);
+                        }
+                        return new ArrayList<>();
+                    }
+                });
         return view;
     }
 
