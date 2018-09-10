@@ -17,9 +17,10 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import group.tonight.electricityfeehelper.MainApp;
+import group.tonight.electricityfeehelper.crud.UserDao;
+import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.dao.UserBean;
-import group.tonight.electricityfeehelper.dao.UserDao;
 
 /**
  * Created by liyiwei on 2018/2/21.
@@ -195,10 +196,9 @@ public class MyUtils {
 
         UserDao userDao = MainApp.getDaoSession().getUserDao();
 
-        User unique = userDao.queryBuilder()
-                .where(UserDao.Properties.UserId.eq(用户编号))
-                .build()
-                .unique();
+        User unique = UserDatabase.get()
+                .getUserDao()
+                .loadUserByUserId(用户编号);
 
         boolean isNew = false;
         if (unique == null) {

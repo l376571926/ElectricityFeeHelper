@@ -12,8 +12,8 @@ import android.widget.EditText;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.crud.OrderDao;
 import group.tonight.electricityfeehelper.dao.Order;
-import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
 
 public class PayFragment extends DialogFragment implements View.OnClickListener {
@@ -94,7 +94,7 @@ public class PayFragment extends DialogFragment implements View.OnClickListener 
                 if (!TextUtils.isEmpty(shiShouStr)) {
                     if (!shiShouStr.startsWith(".")) {
                         OrderDao orderDao = MainApp.getDaoSession().getOrderDao();
-                        Order order = orderDao.load(Long.parseLong(mParam1));
+                        Order order = orderDao.load(Integer.parseInt(mParam1));
                         if (order != null) {
                             double yingShou = order.getYingShou();
                             double shiShou = order.getShiShou();

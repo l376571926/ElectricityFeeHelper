@@ -1,7 +1,10 @@
 package group.tonight.electricityfeehelper.fragments;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -24,7 +27,7 @@ import com.lzy.okgo.callback.AbsCallback;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
-import org.greenrobot.greendao.query.QueryBuilder;
+import org.apache.log4j.chainsaw.Main;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,11 +35,12 @@ import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.crud.OrderDao;
+import group.tonight.electricityfeehelper.crud.UserDao;
+import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.Order;
-import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.dao.UserDao;
 import group.tonight.electricityfeehelper.utils.MyUtils;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -137,18 +141,17 @@ public class OrderListFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 Log.e(TAG, "onQueryTextChange: " + newText);
                 if (getActivity() != null) {
-                    DaoSession daoSession = MainApp.getDaoSession();
-                    UserDao userDao = daoSession.getUserDao();
-
-                    QueryBuilder<User> userQueryBuilder = userDao.queryBuilder()
-                            .whereOr(UserDao.Properties.UserId.like("%" + newText + "%"), UserDao.Properties.UserName.like("%" + newText + "%"));
-
-                    userQueryBuilder.where(UserDao.Properties.QianFeiSum.notEq(0));
-
-                    List<User> list = userQueryBuilder
-                            .limit(50)
-                            .list();
-                    mBaseQuickAdapter.replaceData(list);
+                    UserDao userDao = MainApp.getDaoSession().getUserDao();
+                    LiveData<List<User>> liveData = userDao.search1(newText, newText);
+                    liveData.observe(OrderListFragment.this, new Observer<List<User>>() {
+                        @Override
+                        public void onChanged(@Nullable List<User> users) {
+                            if (users == null) {
+                                return;
+                            }
+                            mBaseQuickAdapter.replaceData(users);
+                        }
+                    });
                 }
                 return false;
             }
@@ -162,11 +165,9 @@ public class OrderListFragment extends Fragment {
                 if (getActivity() == null) {
                     return;
                 }
-                UserDao userDao = MainApp.getDaoSession().getUserDao();
-
-                final List<User> list = userDao.queryBuilder()
-                        .where(UserDao.Properties.QianFeiSum.notEq(0))
-                        .list();
+                final List<User> list = MainApp.getDaoSession()
+                        .getUserDao()
+                        .loadOrderListNotEq0();
                 if (getActivity() == null) {
                     return;
                 }
@@ -198,7 +199,7 @@ public class OrderListFragment extends Fragment {
             if (getActivity() == null) {
                 return null;
             }
-            DaoSession daoSession = MainApp.getDaoSession();
+            UserDatabase daoSession = MainApp.getDaoSession();
             OrderDao orderDao = daoSession.getOrderDao();
             UserDao userDao = daoSession.getUserDao();
 
@@ -232,16 +233,16 @@ public class OrderListFragment extends Fragment {
 
                     String orderStatus = orderObj.getString("电费类别");
 
-                    User user = userDao.queryBuilder()
-                            .where(UserDao.Properties.UserId.eq(userId))
-                            .unique();
-                    if (user != null) {
-                        Long id1 = user.getId();
 
-                        Order unique = orderDao.queryBuilder()
-                                .where(OrderDao.Properties.Uid.eq(id1), OrderDao.Properties.OrderDate.eq(orderDate))
-                                .build()
-                                .unique();
+                    User user = UserDatabase.get()
+                            .getUserDao()
+                            .loadUserByUserId(userId);
+                    if (user != null) {
+                        int id1 = user.getId();
+
+                        Order unique = UserDatabase.get()
+                                .getOrderDao()
+                                .loadOrderByUidAndOrderDate(id1, orderDate);
                         if (unique == null) {
                             unique = new Order();
                             unique.setUid(id1);

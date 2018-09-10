@@ -1,9 +1,12 @@
 package group.tonight.electricityfeehelper.fragments;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -29,7 +32,6 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.socks.library.KLog;
 
-import org.greenrobot.greendao.query.QueryBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -40,9 +42,9 @@ import java.util.List;
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.activities.UserInfoActivity;
-import group.tonight.electricityfeehelper.dao.DaoSession;
+import group.tonight.electricityfeehelper.crud.UserDao;
+import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.dao.UserDao;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
 import group.tonight.electricityfeehelper.utils.MyUtils;
 import okhttp3.Response;
@@ -159,8 +161,10 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
         new Thread(new Runnable() {
             @Override
             public void run() {
-                UserDao userDao = MainApp.getDaoSession().getUserDao();
-                final List<User> list = userDao.loadAll();
+                final List<User> list = MainApp
+                        .getDaoSession()
+                        .getUserDao()
+                        .loadAll();
                 KLog.e("onCreateView: " + list.size());
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
@@ -220,21 +224,18 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
             public boolean onQueryTextChange(String newText) {
                 KLog.e(newText);
                 if (getActivity() != null) {
-                    DaoSession daoSession = MainApp.getDaoSession();
-                    UserDao userDao = daoSession.getUserDao();
-
-                    QueryBuilder<User> userQueryBuilder = userDao.queryBuilder()
-                            .whereOr(
-                                    UserDao.Properties.UserId.like("%" + newText + "%")//匹配用户ID
-                                    , UserDao.Properties.UserName.like("%" + newText + "%")//匹配用户姓名
-                                    , UserDao.Properties.PowerMeterId.like("%" + newText + "%")//匹配电能表编号
-                                    , UserDao.Properties.UserPhone.like("%" + newText + "%")//匹配用户手机
-                            );
-
-                    List<User> list = userQueryBuilder
-                            .limit(50)
-                            .list();
-                    mBaseQuickAdapter.replaceData(list);
+                    LiveData<List<User>> liveData = UserDatabase.get()
+                            .getUserDao()
+                            .searchUser(newText, newText, newText, newText);
+                    liveData.observe(UserListFragment.this, new Observer<List<User>>() {
+                        @Override
+                        public void onChanged(@Nullable List<User> users) {
+                            if (users == null) {
+                                return;
+                            }
+                            mBaseQuickAdapter.replaceData(users);
+                        }
+                    });
                 }
                 return false;
             }

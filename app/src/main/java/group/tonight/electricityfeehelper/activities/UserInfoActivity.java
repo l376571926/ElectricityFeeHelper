@@ -14,10 +14,10 @@ import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.crud.UserDao;
 import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.Order;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.dao.UserDao;
 import group.tonight.electricityfeehelper.fragments.AddUserFragment;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
 import group.tonight.electricityfeehelper.utils.MyUtils;
@@ -68,11 +68,7 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
 
         mPhoneTv.setOnClickListener(this);
 
-        long _id = getIntent().getLongExtra("_id", -1L);
-        DaoSession daoSession = MainApp.getDaoSession();
-        UserDao userDao = daoSession.getUserDao();
-
-        mUser = userDao.load(_id);
+        mUser = MainApp.getDaoSession().getUserDao().load(getIntent().getIntExtra("_id", -1));
         if (mUser == null) {
             return;
         }
@@ -99,18 +95,18 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
         mPositionIdTv.setText(positionId);
         mSerialIdTv.setText(serialId);
 
-        List<Order> orderList = mUser.getOrders();
-        double yingShouSum = 0;
-        double shiShouSum = 0;
-        double qianfeiSum = 0;
-        for (Order order : orderList) {
-            yingShouSum += order.getYingShou();
-            shiShouSum += order.getShiShou();
-            qianfeiSum += order.getQianFei();
-        }
-        mYingShouTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(yingShouSum)));
-        mShiShouTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(shiShouSum)));
-        mQianFeiTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(qianfeiSum)));
+//        List<Order> orderList = mUser.getOrders();
+//        double yingShouSum = 0;
+//        double shiShouSum = 0;
+//        double qianfeiSum = 0;
+//        for (Order order : orderList) {
+//            yingShouSum += order.getYingShou();
+//            shiShouSum += order.getShiShou();
+//            qianfeiSum += order.getQianFei();
+//        }
+//        mYingShouTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(yingShouSum)));
+//        mShiShouTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(shiShouSum)));
+//        mQianFeiTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(qianfeiSum)));
 
     }
 
@@ -133,8 +129,7 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     @Override
     public void onFragmentInteraction(int result) {
         if (result == Activity.RESULT_OK) {
-            DaoSession daoSession = MainApp.getDaoSession();
-            UserDao userDao = daoSession.getUserDao();
+            UserDao userDao = MainApp.getDaoSession().getUserDao();
             mUser = userDao.load(mUser.getId());
             initData();
         }

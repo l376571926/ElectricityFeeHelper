@@ -15,9 +15,8 @@ import android.widget.Toast;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.dao.DaoSession;
+import group.tonight.electricityfeehelper.crud.UserDao;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.dao.UserDao;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
 
 /**
@@ -27,7 +26,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "userId";
 
-    private long mUserId;
+    private int mUserId;
 
     private OnFragmentInteractionListener mListener;
     private EditText mUserIdEt;
@@ -56,7 +55,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mUserId = getArguments().getLong(ARG_PARAM1);
+            mUserId = getArguments().getInt(ARG_PARAM1);
         }
     }
 
@@ -93,8 +92,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
 //            mDeviceIdVg.setVisibility(View.GONE);
             mSerialIdVg.setVisibility(View.GONE);
             if (getActivity() != null) {
-                DaoSession daoSession = MainApp.getDaoSession();
-                UserDao userDao = daoSession.getUserDao();
+                UserDao userDao = MainApp.getDaoSession().getUserDao();
                 User user = userDao.load(mUserId);
                 if (user != null) {
                     mUserIdEt.setText(user.getUserId());

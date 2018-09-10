@@ -22,8 +22,8 @@ import java.util.Date;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.crud.OrderDao;
 import group.tonight.electricityfeehelper.dao.Order;
-import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
 import group.tonight.electricityfeehelper.utils.MyUtils;
 
@@ -202,7 +202,7 @@ public class AddOrderFragment extends DialogFragment implements View.OnClickList
                     OrderDao orderDao = MainApp.getDaoSession().getOrderDao();
 
                     Order order = new Order();
-                    order.setUid(Long.parseLong(mParam1));
+                    order.setUid(Integer.parseInt(mParam1));
                     order.setYingShou(mYingShou);
                     order.setShiShou(mShiShou);
                     order.setQianFei(mYingShou - mShiShou);

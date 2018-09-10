@@ -1,0 +1,287 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "7df635961ce87c8f14744a1a44e3b819",
+    "entities": [
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userId` TEXT, `userName` TEXT, `userPhone` TEXT, `powerLineId` TEXT, `powerLineName` TEXT, `meterReadingDay` TEXT, `meterReader` TEXT, `measurementPointId` TEXT, `meterReadingId` TEXT, `powerMeterId` TEXT, `powerValueType` TEXT, `lastPowerValue` TEXT, `currentPowerValue` TEXT, `consumePowerValue` TEXT, `comprehensiveRatio` TEXT, `meterReadingNumber` TEXT, `exceptionTypes` TEXT, `meterReadingStatus` TEXT, `powerSupplyId` TEXT, `powerSupplyName` TEXT, `userAddress` TEXT, `yingShouSum` REAL NOT NULL, `shiShouSum` REAL NOT NULL, `qianFeiSum` REAL NOT NULL, `createTime` INTEGER NOT NULL, `updateTime` INTEGER NOT NULL, `remarks` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userName",
+            "columnName": "userName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userPhone",
+            "columnName": "userPhone",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "powerLineId",
+            "columnName": "powerLineId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "powerLineName",
+            "columnName": "powerLineName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "meterReadingDay",
+            "columnName": "meterReadingDay",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "meterReader",
+            "columnName": "meterReader",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "measurementPointId",
+            "columnName": "measurementPointId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "meterReadingId",
+            "columnName": "meterReadingId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "powerMeterId",
+            "columnName": "powerMeterId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "powerValueType",
+            "columnName": "powerValueType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastPowerValue",
+            "columnName": "lastPowerValue",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "currentPowerValue",
+            "columnName": "currentPowerValue",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "consumePowerValue",
+            "columnName": "consumePowerValue",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "comprehensiveRatio",
+            "columnName": "comprehensiveRatio",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "meterReadingNumber",
+            "columnName": "meterReadingNumber",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "exceptionTypes",
+            "columnName": "exceptionTypes",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "meterReadingStatus",
+            "columnName": "meterReadingStatus",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "powerSupplyId",
+            "columnName": "powerSupplyId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "powerSupplyName",
+            "columnName": "powerSupplyName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userAddress",
+            "columnName": "userAddress",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "yingShouSum",
+            "columnName": "yingShouSum",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shiShouSum",
+            "columnName": "shiShouSum",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "qianFeiSum",
+            "columnName": "qianFeiSum",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createTime",
+            "columnName": "createTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updateTime",
+            "columnName": "updateTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remarks",
+            "columnName": "remarks",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Order",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uid` INTEGER NOT NULL, `orderDate` TEXT, `yingShou` REAL NOT NULL, `shiShou` REAL NOT NULL, `qianFei` REAL NOT NULL, `yingShouWeiYue` REAL NOT NULL, `shiShouWeiYue` REAL NOT NULL, `qianJiaoWeiYue` REAL NOT NULL, `orderStatus` TEXT, `remarks` TEXT, `createTime` INTEGER NOT NULL, `updateTime` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orderDate",
+            "columnName": "orderDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "yingShou",
+            "columnName": "yingShou",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shiShou",
+            "columnName": "shiShou",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "qianFei",
+            "columnName": "qianFei",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "yingShouWeiYue",
+            "columnName": "yingShouWeiYue",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shiShouWeiYue",
+            "columnName": "shiShouWeiYue",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "qianJiaoWeiYue",
+            "columnName": "qianJiaoWeiYue",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "orderStatus",
+            "columnName": "orderStatus",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "remarks",
+            "columnName": "remarks",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "createTime",
+            "columnName": "createTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updateTime",
+            "columnName": "updateTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7df635961ce87c8f14744a1a44e3b819\")"
+    ]
+  }
+}

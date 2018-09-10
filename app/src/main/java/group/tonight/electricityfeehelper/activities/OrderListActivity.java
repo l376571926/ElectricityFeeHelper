@@ -17,8 +17,8 @@ import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.crud.OrderDao;
 import group.tonight.electricityfeehelper.dao.Order;
-import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.fragments.AddOrderFragment;
 import group.tonight.electricityfeehelper.fragments.PayFragment;
@@ -30,7 +30,7 @@ import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListen
 public class OrderListActivity extends BackEnableActivity implements OnFragmentInteractionListener, View.OnClickListener {
 
     private RecyclerView mOrderRv;
-    private Long mFId;
+    private int mFId;
     private TextView mUserNameTv;
     private User mUser;
 
@@ -44,7 +44,7 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
 
         findViewById(R.id.detail).setOnClickListener(this);
 
-        mFId = getIntent().getLongExtra("_id", -1);
+        mFId = getIntent().getIntExtra("_id", -1);
 
         mBaseQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
@@ -71,10 +71,10 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
         String userName = mUser.getUserName();
         mUserNameTv.setText(userName);
 
-        OrderDao orderDao = MainApp.getDaoSession().getOrderDao();
-        List<Order> list = orderDao.queryBuilder()
-                .where(OrderDao.Properties.Uid.eq(mFId))
-                .list();
+        List<Order> list = MainApp
+                .getDaoSession()
+                .getOrderDao()
+                .loadOrderByUid(mFId);
         mBaseQuickAdapter.replaceData(list);
     }
 
@@ -115,10 +115,10 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
     @Override
     public void onFragmentInteraction(int result) {
         if (result == Activity.RESULT_OK) {
-            OrderDao orderDao = MainApp.getDaoSession().getOrderDao();
-            List<Order> list = orderDao.queryBuilder()
-                    .where(OrderDao.Properties.Uid.eq(mFId))
-                    .list();
+            List<Order> list = MainApp
+                    .getDaoSession()
+                    .getOrderDao()
+                    .loadOrderByUid(mFId);
             mBaseQuickAdapter.replaceData(list);
         }
     }

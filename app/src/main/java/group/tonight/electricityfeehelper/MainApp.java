@@ -2,12 +2,11 @@ package group.tonight.electricityfeehelper;
 
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
 import com.lzy.okgo.OkGo;
 
-import org.greenrobot.greendao.database.Database;
 
-import group.tonight.electricityfeehelper.dao.DaoMaster;
-import group.tonight.electricityfeehelper.dao.DaoSession;
+import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.utils.CrashHandler;
 
 /**
@@ -16,21 +15,17 @@ import group.tonight.electricityfeehelper.utils.CrashHandler;
 
 public class MainApp extends Application {
 
-    private static DaoSession daoSession;
-
     @Override
     public void onCreate() {
         super.onCreate();
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "users-db");
-        Database db = helper.getWritableDb();
-        daoSession = new DaoMaster(db).newSession();
+        Stetho.initializeWithDefaults(this);
+        UserDatabase.init(this);
 
         OkGo.getInstance().init(this);
         CrashHandler.getInstance().init(this);
     }
 
-    public static DaoSession getDaoSession() {
-        daoSession.clear();
-        return daoSession;
+    public static UserDatabase getDaoSession() {
+        return UserDatabase.get();
     }
 }

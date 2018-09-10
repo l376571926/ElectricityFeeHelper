@@ -28,11 +28,11 @@ import java.util.List;
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.activities.SettingActivity;
-import group.tonight.electricityfeehelper.dao.DaoSession;
+import group.tonight.electricityfeehelper.crud.OrderDao;
+import group.tonight.electricityfeehelper.crud.UserDao;
+import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.Order;
-import group.tonight.electricityfeehelper.dao.OrderDao;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.dao.UserDao;
 import group.tonight.electricityfeehelper.utils.MyUtils;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -202,7 +202,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 return null;
             }
 
-            DaoSession daoSession = MainApp.getDaoSession();
+            UserDatabase daoSession = MainApp.getDaoSession();
             OrderDao orderDao = daoSession.getOrderDao();
             UserDao userDao = daoSession.getUserDao();
 
@@ -236,16 +236,12 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
                     String orderStatus = orderObj.getString("电费类别");
 
-                    User user = userDao.queryBuilder()
-                            .where(UserDao.Properties.UserId.eq(userId))
-                            .unique();
+                    User user = userDao.loadUserByUserId(userId);
                     if (user != null) {
-                        Long id1 = user.getId();
-
-                        Order unique = orderDao.queryBuilder()
-                                .where(OrderDao.Properties.Uid.eq(id1), OrderDao.Properties.OrderDate.eq(orderDate))
-                                .build()
-                                .unique();
+                        int id1 = user.getId();
+                        Order unique = UserDatabase.get()
+                                .getOrderDao()
+                                .loadOrderByUidAndOrderDate(id1,orderDate);
                         if (unique == null) {
                             unique = new Order();
                             unique.setUid(id1);

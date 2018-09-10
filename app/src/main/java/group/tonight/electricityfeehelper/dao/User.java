@@ -1,13 +1,10 @@
 package group.tonight.electricityfeehelper.dao;
 
-import org.greenrobot.greendao.DaoException;
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.ToMany;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by liyiwei on 2018/2/20.
@@ -15,8 +12,8 @@ import java.util.List;
 @Entity
 public class User implements Serializable {
     private static final long serialVersionUID = -4794237852963304362L;
-    @Id
-    private Long id;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
 
     private String userId;//用户编号
     private String userName;//用户名称
@@ -48,70 +45,16 @@ public class User implements Serializable {
     private long updateTime;
     private String remarks;//备注
 
-    @ToMany(referencedJoinProperty = "uid")
-    private List<Order> orders;
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1507654846)
-    private transient UserDao myDao;
-
-    @Generated(hash = 345354198)
-    public User(Long id, String userId, String userName, String userPhone,
-            String powerLineId, String powerLineName, String meterReadingDay,
-            String meterReader, String measurementPointId, String meterReadingId,
-            String powerMeterId, String powerValueType, String lastPowerValue,
-            String currentPowerValue, String consumePowerValue,
-            String comprehensiveRatio, String meterReadingNumber,
-            String exceptionTypes, String meterReadingStatus, String powerSupplyId,
-            String powerSupplyName, String userAddress, double yingShouSum,
-            double shiShouSum, double qianFeiSum, long createTime, long updateTime,
-            String remarks) {
-        this.id = id;
-        this.userId = userId;
-        this.userName = userName;
-        this.userPhone = userPhone;
-        this.powerLineId = powerLineId;
-        this.powerLineName = powerLineName;
-        this.meterReadingDay = meterReadingDay;
-        this.meterReader = meterReader;
-        this.measurementPointId = measurementPointId;
-        this.meterReadingId = meterReadingId;
-        this.powerMeterId = powerMeterId;
-        this.powerValueType = powerValueType;
-        this.lastPowerValue = lastPowerValue;
-        this.currentPowerValue = currentPowerValue;
-        this.consumePowerValue = consumePowerValue;
-        this.comprehensiveRatio = comprehensiveRatio;
-        this.meterReadingNumber = meterReadingNumber;
-        this.exceptionTypes = exceptionTypes;
-        this.meterReadingStatus = meterReadingStatus;
-        this.powerSupplyId = powerSupplyId;
-        this.powerSupplyName = powerSupplyName;
-        this.userAddress = userAddress;
-        this.yingShouSum = yingShouSum;
-        this.shiShouSum = shiShouSum;
-        this.qianFeiSum = qianFeiSum;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.remarks = remarks;
+    public int getId() {
+        return id;
     }
 
-    @Generated(hash = 586692638)
-    public User() {
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
     public String getUserId() {
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {
@@ -119,7 +62,7 @@ public class User implements Serializable {
     }
 
     public String getUserName() {
-        return this.userName;
+        return userName;
     }
 
     public void setUserName(String userName) {
@@ -127,7 +70,7 @@ public class User implements Serializable {
     }
 
     public String getUserPhone() {
-        return this.userPhone;
+        return userPhone;
     }
 
     public void setUserPhone(String userPhone) {
@@ -135,7 +78,7 @@ public class User implements Serializable {
     }
 
     public String getPowerLineId() {
-        return this.powerLineId;
+        return powerLineId;
     }
 
     public void setPowerLineId(String powerLineId) {
@@ -143,7 +86,7 @@ public class User implements Serializable {
     }
 
     public String getPowerLineName() {
-        return this.powerLineName;
+        return powerLineName;
     }
 
     public void setPowerLineName(String powerLineName) {
@@ -151,7 +94,7 @@ public class User implements Serializable {
     }
 
     public String getMeterReadingDay() {
-        return this.meterReadingDay;
+        return meterReadingDay;
     }
 
     public void setMeterReadingDay(String meterReadingDay) {
@@ -159,7 +102,7 @@ public class User implements Serializable {
     }
 
     public String getMeterReader() {
-        return this.meterReader;
+        return meterReader;
     }
 
     public void setMeterReader(String meterReader) {
@@ -167,7 +110,7 @@ public class User implements Serializable {
     }
 
     public String getMeasurementPointId() {
-        return this.measurementPointId;
+        return measurementPointId;
     }
 
     public void setMeasurementPointId(String measurementPointId) {
@@ -175,7 +118,7 @@ public class User implements Serializable {
     }
 
     public String getMeterReadingId() {
-        return this.meterReadingId;
+        return meterReadingId;
     }
 
     public void setMeterReadingId(String meterReadingId) {
@@ -183,7 +126,7 @@ public class User implements Serializable {
     }
 
     public String getPowerMeterId() {
-        return this.powerMeterId;
+        return powerMeterId;
     }
 
     public void setPowerMeterId(String powerMeterId) {
@@ -191,7 +134,7 @@ public class User implements Serializable {
     }
 
     public String getPowerValueType() {
-        return this.powerValueType;
+        return powerValueType;
     }
 
     public void setPowerValueType(String powerValueType) {
@@ -199,7 +142,7 @@ public class User implements Serializable {
     }
 
     public String getLastPowerValue() {
-        return this.lastPowerValue;
+        return lastPowerValue;
     }
 
     public void setLastPowerValue(String lastPowerValue) {
@@ -207,7 +150,7 @@ public class User implements Serializable {
     }
 
     public String getCurrentPowerValue() {
-        return this.currentPowerValue;
+        return currentPowerValue;
     }
 
     public void setCurrentPowerValue(String currentPowerValue) {
@@ -215,7 +158,7 @@ public class User implements Serializable {
     }
 
     public String getConsumePowerValue() {
-        return this.consumePowerValue;
+        return consumePowerValue;
     }
 
     public void setConsumePowerValue(String consumePowerValue) {
@@ -223,7 +166,7 @@ public class User implements Serializable {
     }
 
     public String getComprehensiveRatio() {
-        return this.comprehensiveRatio;
+        return comprehensiveRatio;
     }
 
     public void setComprehensiveRatio(String comprehensiveRatio) {
@@ -231,7 +174,7 @@ public class User implements Serializable {
     }
 
     public String getMeterReadingNumber() {
-        return this.meterReadingNumber;
+        return meterReadingNumber;
     }
 
     public void setMeterReadingNumber(String meterReadingNumber) {
@@ -239,7 +182,7 @@ public class User implements Serializable {
     }
 
     public String getExceptionTypes() {
-        return this.exceptionTypes;
+        return exceptionTypes;
     }
 
     public void setExceptionTypes(String exceptionTypes) {
@@ -247,7 +190,7 @@ public class User implements Serializable {
     }
 
     public String getMeterReadingStatus() {
-        return this.meterReadingStatus;
+        return meterReadingStatus;
     }
 
     public void setMeterReadingStatus(String meterReadingStatus) {
@@ -255,7 +198,7 @@ public class User implements Serializable {
     }
 
     public String getPowerSupplyId() {
-        return this.powerSupplyId;
+        return powerSupplyId;
     }
 
     public void setPowerSupplyId(String powerSupplyId) {
@@ -263,7 +206,7 @@ public class User implements Serializable {
     }
 
     public String getPowerSupplyName() {
-        return this.powerSupplyName;
+        return powerSupplyName;
     }
 
     public void setPowerSupplyName(String powerSupplyName) {
@@ -271,7 +214,7 @@ public class User implements Serializable {
     }
 
     public String getUserAddress() {
-        return this.userAddress;
+        return userAddress;
     }
 
     public void setUserAddress(String userAddress) {
@@ -279,7 +222,7 @@ public class User implements Serializable {
     }
 
     public double getYingShouSum() {
-        return this.yingShouSum;
+        return yingShouSum;
     }
 
     public void setYingShouSum(double yingShouSum) {
@@ -287,7 +230,7 @@ public class User implements Serializable {
     }
 
     public double getShiShouSum() {
-        return this.shiShouSum;
+        return shiShouSum;
     }
 
     public void setShiShouSum(double shiShouSum) {
@@ -295,7 +238,7 @@ public class User implements Serializable {
     }
 
     public double getQianFeiSum() {
-        return this.qianFeiSum;
+        return qianFeiSum;
     }
 
     public void setQianFeiSum(double qianFeiSum) {
@@ -303,7 +246,7 @@ public class User implements Serializable {
     }
 
     public long getCreateTime() {
-        return this.createTime;
+        return createTime;
     }
 
     public void setCreateTime(long createTime) {
@@ -311,7 +254,7 @@ public class User implements Serializable {
     }
 
     public long getUpdateTime() {
-        return this.updateTime;
+        return updateTime;
     }
 
     public void setUpdateTime(long updateTime) {
@@ -319,82 +262,10 @@ public class User implements Serializable {
     }
 
     public String getRemarks() {
-        return this.remarks;
+        return remarks;
     }
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1238409544)
-    public List<Order> getOrders() {
-        if (orders == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            OrderDao targetDao = daoSession.getOrderDao();
-            List<Order> ordersNew = targetDao._queryUser_Orders(id);
-            synchronized (this) {
-                if (orders == null) {
-                    orders = ordersNew;
-                }
-            }
-        }
-        return orders;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 1446109810)
-    public synchronized void resetOrders() {
-        orders = null;
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 2059241980)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getUserDao() : null;
-    }
-    
 }
