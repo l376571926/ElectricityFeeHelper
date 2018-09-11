@@ -47,14 +47,13 @@ dependencies {
     implementation 'com.github.zhaokaiqiang.klog:library:1.6.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.38'
     implementation 'com.google.code.gson:gson:2.8.5'
-
     //本地存储调试工具：数据库、偏好文件
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
-
     //谷歌官方room数据库
     implementation 'android.arch.persistence.room:runtime:1.1.1'
     annotationProcessor 'android.arch.persistence.room:compiler:1.1.1'
     //谷歌AAC安卓架构组件,For Lifecycles, LiveData, and ViewModel,多加这三个依赖仅增加了9kb的apk占用
     implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation project(':githubupdatelibrary')
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">电费收费系统</string>
+    <string name="app_name">电费收费小助手</string>
 
     <string name="yuan_place_holder">%1$s￥</string>
     <string name="qian_fei_sum_place_holder">总欠费：%1$s￥</string>
