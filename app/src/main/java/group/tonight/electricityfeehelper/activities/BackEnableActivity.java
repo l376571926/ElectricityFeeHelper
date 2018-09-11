@@ -1,5 +1,7 @@
 package group.tonight.electricityfeehelper.activities;
 
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -20,6 +22,11 @@ public abstract class BackEnableActivity extends AppCompatActivity {
     protected TextView mTitleView;
     private ViewGroup mContentView;
     private Toolbar mToolbar;
+    private ViewDataBinding mViewDataBinding;
+
+    protected abstract int setChildLayoutId();
+
+    protected abstract String setActivityName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,11 +37,6 @@ public abstract class BackEnableActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mTitleView = (TextView) findViewById(R.id.toolbar_title);
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().setStatusBarColor(InfinityUtils.getRoleToolbarBgColor(this));
-//        }
-//        mToolbar.setBackgroundColor(InfinityUtils.getRoleToolbarBgColor(this));
 
         mToolbar.setTitle("");//必需手动清除默认标题文字（xml中填空都没用），否则会显示在ActionBar上
         setSupportActionBar(mToolbar);
@@ -47,13 +49,12 @@ public abstract class BackEnableActivity extends AppCompatActivity {
             }
         }
         //填充子Activity布局
-        getLayoutInflater().inflate(setChildLayoutId(), mContentView);
-
+        mViewDataBinding = DataBindingUtil.inflate(getLayoutInflater(), setChildLayoutId(), mContentView, true);
     }
 
-    protected abstract int setChildLayoutId();
-
-    protected abstract String setActivityName();
+    protected void setLayoutData(int variableId, @Nullable Object value) {
+        mViewDataBinding.setVariable(variableId, value);
+    }
 
     /**
      * 如果继承的Activity不需要显示后退按钮，重写此方法返回false即可

@@ -30,6 +30,7 @@ import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
+import group.tonight.electricityfeehelper.activities.SettingActivity;
 import group.tonight.electricityfeehelper.activities.UserInfoActivity;
 import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.User;
@@ -42,11 +43,7 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private TextView mCountView;
-    private RecyclerView mListView;
-//    private RefreshLayout mRefreshLayout;
-
-    public UserListFragment() {
-    }
+    private RecyclerView mRecyclerView;
 
     @SuppressWarnings("unused")
     public static UserListFragment newInstance(int columnCount) {
@@ -70,71 +67,22 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_list, container, false);
-//        mRefreshLayout = (RefreshLayout) view.findViewById(R.id.smart_refresh_layout);
-//        mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
-//            @Override
-//            public void onLoadMore(RefreshLayout refreshLayout) {
-//                refreshLayout.finishLoadMore();
-//            }
-//
-//            @Override
-//            public void onRefresh(RefreshLayout refreshLayout) {
-//                refreshLayout.finishRefresh();
-//                OkGo.<List<User>>get(MyUtils.LATEST_USER_URL)
-//                        .execute(new AbsCallback<List<User>>() {
-//                            @Override
-//                            public void onSuccess(com.lzy.okgo.model.Response<List<User>> response) {
-//                                List<User> userList = response.body();
-//                                if (userList != null) {
-//                                    KLog.e(userList.size());
-//                                    mCountView.setText(userList.size() + "");
-//                                    mBaseQuickAdapter.replaceData(userList);
-//                                }
-//                            }
-//
-//                            @Override
-//                            public List<User> convertResponse(Response response) throws Throwable {
-//                                ResponseBody responseBody = response.body();
-//                                if (responseBody == null) {
-//                                    return null;
-//                                }
-//                                String json = responseBody.string();
-//                                JSONArray jsonArray = new JSONArray(json);
-//                                FragmentActivity activity = getActivity();
-//                                if (activity == null) {
-//                                    return null;
-//                                }
-//                                for (int i = 0; i < jsonArray.length(); i++) {
-//                                    String userInfoUrl = jsonArray.getString(i);
-//                                    Response execute = OkGo.<byte[]>get(userInfoUrl)
-//                                            .execute();
-//                                    ResponseBody responseBody1 = execute.body();
-//                                    if (responseBody1 == null) {
-//                                        return null;
-//                                    }
-//                                    MyUtils.saveUserListToDb(responseBody1.bytes());
-//                                }
-//                                return MainApp.getDaoSession().getUserDao().loadAll();
-//                            }
-//                        });
-//            }
-//        });
-        mListView = (RecyclerView) view.findViewById(R.id.list);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.list);
         mCountView = (TextView) view.findViewById(R.id.count);
 
         setHasOptionsMenu(true);
 
         // Set the adapter
-        final Context context = mListView.getContext();
+        final Context context = mRecyclerView.getContext();
 
-        mListView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
 
         if (mColumnCount <= 1) {
-            mListView.setLayoutManager(new LinearLayoutManager(context));
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         } else {
-            mListView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            mRecyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        mListView.setAdapter(mBaseQuickAdapter);
+        mRecyclerView.setAdapter(mBaseQuickAdapter);
         mBaseQuickAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -208,6 +156,9 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
         switch (item.getItemId()) {
             case R.id.action_add_user:
                 AddUserFragment.newInstance(0).show(getChildFragmentManager(), "");
+                break;
+            case R.id.nav_setting:
+                startActivity(new Intent(getContext(), SettingActivity.class));
                 break;
             default:
                 break;

@@ -14,8 +14,6 @@ public abstract class UserDatabase extends RoomDatabase {
 
     public abstract UserDao getUserDao();
 
-    public abstract OrderDao getOrderDao();
-
     private static UserDatabase INSTANCE;
 
     public static void init(final Context context) {

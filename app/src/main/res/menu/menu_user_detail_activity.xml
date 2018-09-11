@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/action_add_order"
-        android:icon="@drawable/ic_plus_white_48dp"
-        android:title="添加欠费记录" />
-</menu>

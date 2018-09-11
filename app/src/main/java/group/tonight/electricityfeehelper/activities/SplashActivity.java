@@ -2,47 +2,64 @@ package group.tonight.electricityfeehelper.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import group.tonight.electricityfeehelper.BR;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.utils.MyUtils;
+import group.tonight.electricityfeehelper.utils.ExcelParseTask;
 
 public class SplashActivity extends AppCompatActivity {
-
+    private Handler mHandler = new Handler();
     private ProgressBar mInitDataPb;
-    private TextView mHintTv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        ViewDataBinding mViewDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
 
-        mHintTv = (TextView) findViewById(R.id.first_launch_hint_tv);
         mInitDataPb = (ProgressBar) findViewById(R.id.init_data_pb);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.getBoolean("first_launch", true)) {
+        boolean isFirstLaunch = preferences.getBoolean("first_launch", true);
+
+        mViewDataBinding.setVariable(BR.firstLaunch, isFirstLaunch);
+
+        if (isFirstLaunch) {
             preferences.edit()
                     .putBoolean("first_launch", false)
                     .apply();
-            mHintTv.setVisibility(View.VISIBLE);
-            mInitDataPb.setVisibility(View.VISIBLE);
-            new IndexActivity.ExcelParseTask(SplashActivity.this).execute();
-            startActivity(new Intent(SplashActivity.this, IndexActivity.class));
-            finish();
+            ExcelParseTask excelParseTask = new ExcelParseTask(SplashActivity.this);
+            excelParseTask.setOnProgressListener(new ExcelParseTask.OnProgressListener() {
+                @Override
+                public void onProgress(int total, int progress) {
+                    if (total == progress) {
+                        toHome();
+                    } else {
+                        mInitDataPb.setMax(total);
+                        mInitDataPb.setProgress(progress);
+                    }
+                }
+            });
+            new Thread(excelParseTask).start();
         } else {
-            startActivity(new Intent(this, IndexActivity.class));
-            finish();
+            toHome();
         }
+    }
+
+    private void toHome() {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                finish();
+            }
+        }, 2000);
     }
 
 

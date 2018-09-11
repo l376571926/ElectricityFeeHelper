@@ -3,7 +3,6 @@ package group.tonight.electricityfeehelper;
 import android.app.Application;
 
 import com.facebook.stetho.Stetho;
-import com.lzy.okgo.OkGo;
 
 
 import group.tonight.electricityfeehelper.crud.UserDatabase;
@@ -21,7 +20,6 @@ public class MainApp extends Application {
         Stetho.initializeWithDefaults(this);
         UserDatabase.init(this);
 
-        OkGo.getInstance().init(this);
         CrashHandler.getInstance().init(this);
     }
 

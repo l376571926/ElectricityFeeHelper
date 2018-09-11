@@ -1,34 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context="group.tonight.electricityfeehelper.activities.SplashActivity">
 
-    <ImageView
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="80dp"
-        android:src="@mipmap/ic_launcher" />
+    <data>
 
-    <TextView
-        android:id="@+id/first_launch_hint_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="首次启动因加载数据原因会比较慢，请耐心等待"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        <import type="android.view.View" />
+        <import type="java.util.Map"/>
 
-    <ProgressBar
-        android:id="@+id/init_data_pb"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        <variable
+            name="firstLaunch"
+            type="Boolean" />
+
+        <variable
+            name="pro"
+            type="android.util.SparseIntArray" />
+    </data>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_gravity="bottom" />
-</FrameLayout>
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="80dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/first_launch_hint_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="首次启动因加载数据原因会比较慢，请耐心等待"
+            android:visibility="@{firstLaunch?View.VISIBLE:View.GONE}"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/init_data_pb"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:visibility="@{firstLaunch?View.VISIBLE:View.GONE}"
+            tools:visibility="visible" />
+    </FrameLayout>
+</layout>
+

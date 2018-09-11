@@ -10,5 +10,9 @@
     <item
         android:id="@+id/action_add_user"
         android:icon="@drawable/ic_plus_white_24dp"
-        android:title="手动添加用户" />
+        android:title="添加用户" />
+    <item
+        android:id="@+id/nav_setting"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="设置" />
 </menu>
