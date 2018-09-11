@@ -27,7 +27,6 @@ import com.lzy.okgo.callback.AbsCallback;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 
-import org.apache.log4j.chainsaw.Main;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,10 +37,8 @@ import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.crud.OrderDao;
 import group.tonight.electricityfeehelper.crud.UserDao;
 import group.tonight.electricityfeehelper.crud.UserDatabase;
-import group.tonight.electricityfeehelper.dao.DaoSession;
 import group.tonight.electricityfeehelper.dao.Order;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.utils.MyUtils;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
@@ -92,8 +89,8 @@ public class OrderListFragment extends Fragment {
             @Override
             public void onRefresh(RefreshLayout refreshLayout) {
                 refreshLayout.finishRefresh();
-                OkGo.<List<User>>get(MyUtils.LATEST_ORDER_URL)
-                        .execute(mAbsCallback);
+//                OkGo.<List<User>>get(MyUtils.LATEST_ORDER_URL)
+//                        .execute(mAbsCallback);
             }
         });
         mListView = (RecyclerView) view.findViewById(R.id.list);

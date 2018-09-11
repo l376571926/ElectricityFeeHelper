@@ -1,26 +1,24 @@
 package group.tonight.electricityfeehelper.activities;
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.List;
-
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.crud.UserDao;
-import group.tonight.electricityfeehelper.dao.DaoSession;
-import group.tonight.electricityfeehelper.dao.Order;
+import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.fragments.AddUserFragment;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
-import group.tonight.electricityfeehelper.utils.MyUtils;
 
 /**
  * 用户资料
@@ -68,12 +66,29 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
 
         mPhoneTv.setOnClickListener(this);
 
-        mUser = MainApp.getDaoSession().getUserDao().load(getIntent().getIntExtra("_id", -1));
-        if (mUser == null) {
-            return;
-        }
-        initData();
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                User user = UserDatabase.get()
+                        .getUserDao()
+                        .load(getIntent().getIntExtra("_id", -1));
+                if (user == null) {
+                    return;
+                }
+                mUser = user;
+                LiveData<User> liveData = MainApp.getDaoSession().getUserDao().loadLiveDataUser(mUser.getId());
+                liveData.observe(UserInfoActivity.this, new Observer<User>() {
+                    @Override
+                    public void onChanged(@Nullable User user) {
+                        if (user == null) {
+                            return;
+                        }
+                        mUser = user;
+                        initData();
+                    }
+                });
+            }
+        }).start();
     }
 
     private void initData() {
@@ -107,7 +122,6 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
 //        mYingShouTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(yingShouSum)));
 //        mShiShouTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(shiShouSum)));
 //        mQianFeiTv.setText(getString(R.string.yuan_place_holder, MyUtils.formatDecimal(qianfeiSum)));
-
     }
 
     @Override
@@ -129,9 +143,8 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     @Override
     public void onFragmentInteraction(int result) {
         if (result == Activity.RESULT_OK) {
-            UserDao userDao = MainApp.getDaoSession().getUserDao();
-            mUser = userDao.load(mUser.getId());
-            initData();
+
+
         }
     }
 

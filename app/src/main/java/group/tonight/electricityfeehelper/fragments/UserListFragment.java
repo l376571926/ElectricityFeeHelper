@@ -24,31 +24,16 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.AbsCallback;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshLoadMoreListener;
 import com.socks.library.KLog;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.activities.UserInfoActivity;
-import group.tonight.electricityfeehelper.crud.UserDao;
 import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
-import group.tonight.electricityfeehelper.utils.MyUtils;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * 用户库
@@ -58,7 +43,7 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
     private int mColumnCount = 1;
     private TextView mCountView;
     private RecyclerView mListView;
-    private RefreshLayout mRefreshLayout;
+//    private RefreshLayout mRefreshLayout;
 
     public UserListFragment() {
     }
@@ -85,55 +70,55 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_list, container, false);
-        mRefreshLayout = (RefreshLayout) view.findViewById(R.id.smart_refresh_layout);
-        mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
-            @Override
-            public void onLoadMore(RefreshLayout refreshLayout) {
-                refreshLayout.finishLoadMore();
-            }
-
-            @Override
-            public void onRefresh(RefreshLayout refreshLayout) {
-                refreshLayout.finishRefresh();
-                OkGo.<List<User>>get(MyUtils.LATEST_USER_URL)
-                        .execute(new AbsCallback<List<User>>() {
-                            @Override
-                            public void onSuccess(com.lzy.okgo.model.Response<List<User>> response) {
-                                List<User> userList = response.body();
-                                if (userList != null) {
-                                    KLog.e(userList.size());
-                                    mCountView.setText(userList.size() + "");
-                                    mBaseQuickAdapter.replaceData(userList);
-                                }
-                            }
-
-                            @Override
-                            public List<User> convertResponse(Response response) throws Throwable {
-                                ResponseBody responseBody = response.body();
-                                if (responseBody == null) {
-                                    return null;
-                                }
-                                String json = responseBody.string();
-                                JSONArray jsonArray = new JSONArray(json);
-                                FragmentActivity activity = getActivity();
-                                if (activity == null) {
-                                    return null;
-                                }
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    String userInfoUrl = jsonArray.getString(i);
-                                    Response execute = OkGo.<byte[]>get(userInfoUrl)
-                                            .execute();
-                                    ResponseBody responseBody1 = execute.body();
-                                    if (responseBody1 == null) {
-                                        return null;
-                                    }
-                                    MyUtils.saveUserListToDb(responseBody1.bytes());
-                                }
-                                return MainApp.getDaoSession().getUserDao().loadAll();
-                            }
-                        });
-            }
-        });
+//        mRefreshLayout = (RefreshLayout) view.findViewById(R.id.smart_refresh_layout);
+//        mRefreshLayout.setOnRefreshLoadMoreListener(new OnRefreshLoadMoreListener() {
+//            @Override
+//            public void onLoadMore(RefreshLayout refreshLayout) {
+//                refreshLayout.finishLoadMore();
+//            }
+//
+//            @Override
+//            public void onRefresh(RefreshLayout refreshLayout) {
+//                refreshLayout.finishRefresh();
+//                OkGo.<List<User>>get(MyUtils.LATEST_USER_URL)
+//                        .execute(new AbsCallback<List<User>>() {
+//                            @Override
+//                            public void onSuccess(com.lzy.okgo.model.Response<List<User>> response) {
+//                                List<User> userList = response.body();
+//                                if (userList != null) {
+//                                    KLog.e(userList.size());
+//                                    mCountView.setText(userList.size() + "");
+//                                    mBaseQuickAdapter.replaceData(userList);
+//                                }
+//                            }
+//
+//                            @Override
+//                            public List<User> convertResponse(Response response) throws Throwable {
+//                                ResponseBody responseBody = response.body();
+//                                if (responseBody == null) {
+//                                    return null;
+//                                }
+//                                String json = responseBody.string();
+//                                JSONArray jsonArray = new JSONArray(json);
+//                                FragmentActivity activity = getActivity();
+//                                if (activity == null) {
+//                                    return null;
+//                                }
+//                                for (int i = 0; i < jsonArray.length(); i++) {
+//                                    String userInfoUrl = jsonArray.getString(i);
+//                                    Response execute = OkGo.<byte[]>get(userInfoUrl)
+//                                            .execute();
+//                                    ResponseBody responseBody1 = execute.body();
+//                                    if (responseBody1 == null) {
+//                                        return null;
+//                                    }
+//                                    MyUtils.saveUserListToDb(responseBody1.bytes());
+//                                }
+//                                return MainApp.getDaoSession().getUserDao().loadAll();
+//                            }
+//                        });
+//            }
+//        });
         mListView = (RecyclerView) view.findViewById(R.id.list);
         mCountView = (TextView) view.findViewById(R.id.count);
 
@@ -158,43 +143,19 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
                 startActivity(intent);
             }
         });
-        new Thread(new Runnable() {
+        LiveData<List<User>> liveData = UserDatabase.get()
+                .getUserDao()
+                .loadAllLiveData();
+        liveData.observe(this, new Observer<List<User>>() {
             @Override
-            public void run() {
-                final List<User> list = MainApp
-                        .getDaoSession()
-                        .getUserDao()
-                        .loadAll();
-                KLog.e("onCreateView: " + list.size());
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mCountView.setText(list.size() + "");
-                            mBaseQuickAdapter.replaceData(list);
-                        }
-                    });
+            public void onChanged(@Nullable List<User> users) {
+                if (users == null) {
+                    return;
                 }
+                mCountView.setText(users.size() + "");
+                mBaseQuickAdapter.replaceData(users);
             }
-        }).start();
-        OkGo.<List<User>>get("http://192.168.1.121:8080/getallpoweruserinfo")
-                .execute(new AbsCallback<List<User>>() {
-                    @Override
-                    public void onSuccess(com.lzy.okgo.model.Response<List<User>> response) {
-                        KLog.e();
-                    }
-
-                    @Override
-                    public List<User> convertResponse(Response response) throws Throwable {
-                        JSONObject jsonObject = new JSONObject(response.body().string());
-                        if (jsonObject.getInt("code") == 0) {
-                            Type type = new TypeToken<List<User>>() {
-                            }.getType();
-                            return new Gson().fromJson(jsonObject.getJSONArray("data").toString(), type);
-                        }
-                        return new ArrayList<>();
-                    }
-                });
+        });
         return view;
     }
 

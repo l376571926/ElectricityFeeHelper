@@ -58,8 +58,14 @@ public interface UserDao {
     @Query("SELECT * FROM user WHERE id=:id")
     User load(int id);
 
+    @Query("SELECT * FROM user WHERE id=:id")
+    LiveData<User> loadLiveDataUser(int id);
+
     @Query("SELECT * FROM user")
     List<User> loadAll();
+
+    @Query("SELECT * FROM user")
+    LiveData<List<User>> loadAllLiveData();
 
     @Query("SELECT * FROM USER WHERE userId=:userId")
     User loadUserByUserId(String userId);
@@ -73,7 +79,7 @@ public interface UserDao {
             "or " +
             "userName like '%' ||  :userName || '%' " +
             "and " +
-            "qianFeiSum != 0" +
+            "qianFeiSum != 0 " +
             "limit 50")
     LiveData<List<User>> search1(String userId, String userName);
 

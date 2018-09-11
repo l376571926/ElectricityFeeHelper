@@ -1,9 +1,12 @@
 package group.tonight.electricityfeehelper.fragments;
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -93,19 +96,26 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
             mSerialIdVg.setVisibility(View.GONE);
             if (getActivity() != null) {
                 UserDao userDao = MainApp.getDaoSession().getUserDao();
-                User user = userDao.load(mUserId);
-                if (user != null) {
-                    mUserIdEt.setText(user.getUserId());
-                    mUserNameEt.setText(user.getUserName());
-                    mAddressET.setText(user.getUserAddress());
-                    mPhoneEt.setText(user.getUserPhone());
+                LiveData<User> liveData = userDao.loadLiveDataUser(mUserId);
+                liveData.observe(this, new Observer<User>() {
+                    @Override
+                    public void onChanged(@Nullable User user) {
+                        if (user == null) {
+                            return;
+                        }
+                        mUserIdEt.setText(user.getUserId());
+                        mUserNameEt.setText(user.getUserName());
+                        mAddressET.setText(user.getUserAddress());
+                        mPhoneEt.setText(user.getUserPhone());
 
-                    mDeviceIdEt.setText(user.getPowerMeterId());
-                    mPositionIdEt.setText(user.getMeterReadingId());
-                    mSerialIdEt.setText(user.getPowerLineId());
+                        mDeviceIdEt.setText(user.getPowerMeterId());
+                        mPositionIdEt.setText(user.getMeterReadingId());
+                        mSerialIdEt.setText(user.getPowerLineId());
 
-                    mSaveBtn.setText("保存");
-                }
+                        mSaveBtn.setText("保存");
+                    }
+                });
+
             }
         }
         return rootView;
@@ -129,56 +139,60 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.cancel:
                 dismiss();
                 break;
             case R.id.ok:
-                String userId = mUserIdEt.getText().toString();
-                String userName = mUserNameEt.getText().toString();
-                String address = mAddressET.getText().toString();
-                String phone = mPhoneEt.getText().toString();
+                final String userId = mUserIdEt.getText().toString();
+                final String userName = mUserNameEt.getText().toString();
+                final String address = mAddressET.getText().toString();
+                final String phone = mPhoneEt.getText().toString();
 
-                String deviceId = mDeviceIdEt.getText().toString();
-                String positionId = mPositionIdEt.getText().toString();
-                String serialId = mSerialIdEt.getText().toString();
+                final String deviceId = mDeviceIdEt.getText().toString();
+                final String positionId = mPositionIdEt.getText().toString();
+                final String serialId = mSerialIdEt.getText().toString();
 
-                UserDao userDao = MainApp.getDaoSession().getUserDao();
-                User user = userDao.load(mUserId);
-                if (user == null) {
-                    user = new User();
-                }
-                if (TextUtils.isEmpty(userId)) {
-                    Toast.makeText(v.getContext(), "用户编号未填写", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                user.setUserId(userId);
-                if (TextUtils.isEmpty(userName)) {
-                    Toast.makeText(v.getContext(), "用户姓名未填写", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                user.setUserName(userName);
-                user.setUserAddress(address);
-                user.setUserPhone(phone);
-                long currentTimeMillis = System.currentTimeMillis();
-                user.setUpdateTime(currentTimeMillis);
+                final UserDao userDao = MainApp.getDaoSession().getUserDao();
+                LiveData<User> liveData = userDao.loadLiveDataUser(mUserId);
+                liveData.observe(this, new Observer<User>() {
+                    @Override
+                    public void onChanged(@Nullable User user) {
+                        if (user == null) {
+                            user = new User();
+                        }
+                        if (TextUtils.isEmpty(userId)) {
+                            Toast.makeText(v.getContext(), "用户编号未填写", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        user.setUserId(userId);
+                        if (TextUtils.isEmpty(userName)) {
+                            Toast.makeText(v.getContext(), "用户姓名未填写", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        user.setUserName(userName);
+                        user.setUserAddress(address);
+                        user.setUserPhone(phone);
+                        long currentTimeMillis = System.currentTimeMillis();
+                        user.setUpdateTime(currentTimeMillis);
 
-                user.setPowerMeterId(deviceId);
-                user.setMeterReadingId(positionId);
-                user.setPowerLineId(serialId);
+                        user.setPowerMeterId(deviceId);
+                        user.setMeterReadingId(positionId);
+                        user.setPowerLineId(serialId);
 
-                if (mUserId == 0) {
-                    user.setCreateTime(currentTimeMillis);
-                    userDao.insert(user);
-                } else {
-                    userDao.update(user);
-                }
-                if (mListener != null) {
-                    mListener.onFragmentInteraction(Activity.RESULT_OK);
-                }
-
-                dismiss();
+                        if (mUserId == 0) {
+                            user.setCreateTime(currentTimeMillis);
+                            userDao.insert(user);
+                        } else {
+                            userDao.update(user);
+                        }
+                        if (mListener != null) {
+                            mListener.onFragmentInteraction(Activity.RESULT_OK);
+                        }
+                        dismiss();
+                    }
+                });
                 break;
             default:
                 break;

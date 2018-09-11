@@ -14,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -32,11 +31,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.dao.UserBean;
 import group.tonight.electricityfeehelper.fragments.UserListFragment;
 import jxl.Cell;
 import jxl.Sheet;
@@ -98,7 +95,6 @@ public class IndexActivity extends AppCompatActivity
             case R.id.nav_camera:
                 // Handle the camera action
                 Toast.makeText(this, "导入", Toast.LENGTH_SHORT).show();
-                new ExcelParseTask(this).execute();
                 break;
             case R.id.nav_gallery:
                 Toast.makeText(this, "画廊", Toast.LENGTH_SHORT).show();

@@ -1,8 +1,11 @@
 package group.tonight.electricityfeehelper.activities;
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -17,7 +20,7 @@ import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.crud.OrderDao;
+import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.Order;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.fragments.AddOrderFragment;
@@ -59,23 +62,24 @@ public class OrderListActivity extends BackEnableActivity implements OnFragmentI
                 }
             }
         });
-    }
+        LiveData<User> liveData = UserDatabase.get().getUserDao().loadLiveDataUser(mFId);
+        liveData.observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(@Nullable User user) {
+                mUser = user;
+                if (mUser == null) {
+                    return;
+                }
+                String userName = mUser.getUserName();
+                mUserNameTv.setText(userName);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mUser = MainApp.getDaoSession().getUserDao().load(mFId);
-        if (mUser == null) {
-            return;
-        }
-        String userName = mUser.getUserName();
-        mUserNameTv.setText(userName);
-
-        List<Order> list = MainApp
-                .getDaoSession()
-                .getOrderDao()
-                .loadOrderByUid(mFId);
-        mBaseQuickAdapter.replaceData(list);
+                List<Order> list = MainApp
+                        .getDaoSession()
+                        .getOrderDao()
+                        .loadOrderByUid(mFId);
+                mBaseQuickAdapter.replaceData(list);
+            }
+        });
     }
 
     @Override
