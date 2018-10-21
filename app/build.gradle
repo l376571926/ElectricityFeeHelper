@@ -13,7 +13,7 @@ android {
         applicationId "group.tonight.electricityfeehelper"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 1
+        versionCode 100
         versionName "v1.0.4"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.config
