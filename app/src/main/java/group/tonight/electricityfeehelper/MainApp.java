@@ -5,8 +5,8 @@ import android.app.Application;
 import com.facebook.stetho.Stetho;
 
 
+import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import group.tonight.electricityfeehelper.crud.UserDatabase;
-import group.tonight.electricityfeehelper.utils.CrashHandler;
 
 /**
  * Created by liyiwei on 2018/2/20.
@@ -20,7 +20,7 @@ public class MainApp extends Application {
         Stetho.initializeWithDefaults(this);
         UserDatabase.init(this);
 
-        CrashHandler.getInstance().init(this);
+        CustomActivityOnCrash.install(this);
     }
 
     public static UserDatabase getDaoSession() {

@@ -14,6 +14,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,17 +25,22 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.socks.library.KLog;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import group.tonight.electricityfeehelper.MainApp;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.activities.SettingActivity;
 import group.tonight.electricityfeehelper.activities.UserInfoActivity;
+import group.tonight.electricityfeehelper.crud.UserDao;
 import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
+import group.tonight.workbookhelper.WorkbookHelper;
 
 /**
  * 用户库
@@ -61,6 +67,16 @@ public class UserListFragment extends Fragment implements OnFragmentInteractionL
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (getContext() == null) {
+                    return;
+                }
+
+            }
+        }).start();
     }
 
     @Override

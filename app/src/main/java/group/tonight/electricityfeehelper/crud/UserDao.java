@@ -26,6 +26,9 @@ public interface UserDao {
     @Query("SELECT * FROM user WHERE id=:id")
     LiveData<User> loadLiveDataUser(int id);
 
+    @Query("SELECT * FROM user WHERE userId=:userId")
+    User loadUser(String userId);
+
     @Query("SELECT * FROM user")
     List<User> loadAll();
 

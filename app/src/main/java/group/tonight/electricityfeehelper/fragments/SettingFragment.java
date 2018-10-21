@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import group.tonight.downloadmanagerhelper.DownloadManagerHelper;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.activities.SettingActivity;
 import group.tonight.myandroidlibrary.Release;
@@ -24,6 +25,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     private String mNewApkUrl;
     private View mNewVersionLabel;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -52,15 +54,17 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 String tag_name = release.getTag_name();
                 String name = release.getName();
                 String body = release.getBody();
-
+                if (getActivity() == null) {
+                    return;
+                }
                 PackageManager packageManager = getActivity().getPackageManager();
                 try {
                     PackageInfo packageInfo = packageManager.getPackageInfo(getActivity().getPackageName(), 0);
                     String versionName = packageInfo.versionName;
                     if (!versionName.equals(tag_name)) {
-//                        Toast.makeText(getContext(), "发现新版本", Toast.LENGTH_SHORT).show();
-//                        mNewApkUrl = release.getAssets().get(0).getBrowser_download_url();
-//                        mNewVersionLabel.setVisibility(View.VISIBLE);
+                        Toast.makeText(getContext(), "发现新版本", Toast.LENGTH_SHORT).show();
+                        mNewApkUrl = release.getAssets().get(0).getBrowser_download_url();
+                        mNewVersionLabel.setVisibility(View.VISIBLE);
                     }
 
                 } catch (PackageManager.NameNotFoundException e) {
