@@ -13,8 +13,8 @@ android {
         applicationId "group.tonight.electricityfeehelper"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 100
-        versionName "v1.0.4"
+        versionCode 101
+        versionName "v1.0.5"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.config
         //指定room.schemaLocation生成的文件路径

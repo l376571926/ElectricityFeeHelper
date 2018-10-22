@@ -1,6 +1,7 @@
 package group.tonight.myandroidlibrary;
 
 
+import android.os.Handler;
 import android.os.Looper;
 
 import com.google.gson.Gson;
@@ -28,6 +29,7 @@ public class UpdateTask implements Runnable {
     private String mUserName = "l376571926";
     private String mRepositoryName = "ElectricityFeeHelper";
     private ResultCallback mResultCallback;
+    private Handler mHandler= new Handler(Looper.getMainLooper());
 
     public UpdateTask() {
         X509TrustManager x509TrustManager = new X509TrustManager() {
@@ -76,13 +78,16 @@ public class UpdateTask implements Runnable {
         )
                 .enqueue(new Callback() {
                     @Override
-                    public void onFailure(okhttp3.Call call, IOException e) {
+                    public void onFailure(okhttp3.Call call, final IOException e) {
                         e.printStackTrace();
-                        if (mResultCallback != null) {
-                            Looper.prepare();
-                            mResultCallback.onFailure(e);
-                            Looper.loop();
-                        }
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mResultCallback != null) {
+                                    mResultCallback.onFailure(e);
+                                }
+                            }
+                        });
                     }
 
                     @Override
@@ -94,12 +99,16 @@ public class UpdateTask implements Runnable {
                             if (body == null) {
                                 return;
                             }
-                            Release release = new Gson().fromJson(body.charStream(), Release.class);
-                            if (mResultCallback != null) {
-                                Looper.prepare();
-                                mResultCallback.onResponse(release);
-                                Looper.loop();
-                            }
+                            final Release release = new Gson().fromJson(body.charStream(), Release.class);
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mResultCallback != null) {
+                                        mResultCallback.onResponse(release);
+                                    }
+                                }
+                            });
+
                         }
                     }
                 });

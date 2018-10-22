@@ -1,8 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:name="group.tonight.electricityfeehelper.fragments.SettingFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.SettingActivity" />
+    android:orientation="vertical"
+    tools:context=".activities.SettingActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@android:drawable/divider_horizontal_bright" />
+
+    <LinearLayout
+        android:id="@+id/update"
+        android:layout_width="match_parent"
+        android:layout_height="?android:listPreferredItemHeightSmall"
+        android:gravity="center_vertical"
+        android:paddingLeft="?android:listPreferredItemPaddingLeft"
+        android:paddingRight="?android:listPreferredItemPaddingRight">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="版本更新"
+            android:textAppearance="?android:textAppearanceListItem" />
+
+        <TextView
+            android:id="@+id/new_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/new_version_text_bg"
+            android:text="新版本"
+            android:textColor="@android:color/white"
+            android:textSize="8sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_chevron_right_grey600_24dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@android:drawable/divider_horizontal_bright" />
+
+    <TextView
+        android:id="@+id/update_order"
+        android:layout_width="match_parent"
+        android:layout_height="?android:listPreferredItemHeightSmall"
+        android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="?android:listPreferredItemPaddingLeft"
+        android:paddingRight="?android:listPreferredItemPaddingRight"
+        android:text="欠费清单更新"
+        android:textAppearance="?android:textAppearanceListItem"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@android:drawable/divider_horizontal_bright"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/update_user"
+        android:layout_width="match_parent"
+        android:layout_height="?android:listPreferredItemHeightSmall"
+        android:drawableRight="@drawable/ic_chevron_right_grey600_24dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="?android:listPreferredItemPaddingLeft"
+        android:paddingRight="?android:listPreferredItemPaddingRight"
+        android:text="用户数据更新"
+        android:textAppearance="?android:textAppearanceListItem" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@android:drawable/divider_horizontal_bright" />
+</LinearLayout>
