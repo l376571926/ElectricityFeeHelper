@@ -6,6 +6,7 @@ import android.support.v7.widget.Toolbar;
 
 import group.tonight.electricityfeehelper.R;
 
+// TODO: 2018/10/22 0022 添加扫电能表条形码查询用户数据功能
 public class HomeActivity extends AppCompatActivity {
 
     @Override
