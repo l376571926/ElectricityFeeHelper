@@ -1,12 +1,9 @@
 package group.tonight.electricityfeehelper.fragments;
 
 import android.app.Activity;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,12 +13,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import group.tonight.electricityfeehelper.MainApp;
+import com.google.gson.Gson;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.AbsCallback;
+import com.lzy.okgo.model.Response;
+
+import group.tonight.electricityfeehelper.Application;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.crud.UserDao;
-import group.tonight.electricityfeehelper.crud.UserDatabase;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
+import group.tonight.workbookhelper.BaseResponseBean;
 
 /**
  * 添加用电户
@@ -30,7 +31,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "userId";
 
-    private int mId;
+    private User mUser;
 
     private OnFragmentInteractionListener mListener;
     private EditText mUserIdEt;
@@ -47,10 +48,10 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
         // Required empty public constructor
     }
 
-    public static AddUserFragment newInstance(long id) {
+    public static AddUserFragment newInstance(User user) {
         AddUserFragment fragment = new AddUserFragment();
         Bundle args = new Bundle();
-        args.putLong(ARG_PARAM1, id);
+        args.putSerializable(ARG_PARAM1, user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,7 +60,7 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mId = getArguments().getInt(ARG_PARAM1);
+            mUser = (User) getArguments().getSerializable(ARG_PARAM1);
         }
     }
 
@@ -90,33 +91,23 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
         rootView.findViewById(R.id.cancel).setOnClickListener(this);
         rootView.findViewById(R.id.ok).setOnClickListener(this);
 
-        if (mId != 0) {
-            mDialogTitleTv.setText("修改用户资料");
-            mUserIdVg.setVisibility(View.GONE);
+        if (mUser != null) {
+            if (mUser.getId() != 0) {
+                mDialogTitleTv.setText("修改用户资料");
+                mUserIdVg.setVisibility(View.GONE);
 //            mDeviceIdVg.setVisibility(View.GONE);
-            mSerialIdVg.setVisibility(View.GONE);
+                mSerialIdVg.setVisibility(View.GONE);
 
-            if (getActivity() != null) {
-                LiveData<User> liveData = UserDatabase.get().getUserDao().loadLiveDataUser(mId);
-                liveData.observe(this, new Observer<User>() {
-                    @Override
-                    public void onChanged(@Nullable User user) {
-                        if (user == null) {
-                            return;
-                        }
-                        mUserIdEt.setText(user.getUserId());
-                        mUserNameEt.setText(user.getUserName());
-                        mAddressET.setText(user.getUserAddress());
-                        mPhoneEt.setText(user.getUserPhone());
+                mUserIdEt.setText(mUser.getUserId());
+                mUserNameEt.setText(mUser.getUserName());
+                mAddressET.setText(mUser.getUserAddress());
+                mPhoneEt.setText(mUser.getUserPhone());
 
-                        mDeviceIdEt.setText(user.getPowerMeterId());
-                        mPositionIdEt.setText(user.getMeterReadingId());
-                        mSerialIdEt.setText(user.getPowerLineId());
+                mDeviceIdEt.setText(mUser.getPowerMeterId());
+                mPositionIdEt.setText(mUser.getMeterReadingId());
+                mSerialIdEt.setText(mUser.getPowerLineId());
 
-                        mSaveBtn.setText("保存");
-                    }
-                });
-
+                mSaveBtn.setText("保存");
             }
         }
         return rootView;
@@ -155,45 +146,54 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
                 final String positionId = mPositionIdEt.getText().toString();
                 final String serialId = mSerialIdEt.getText().toString();
 
-                final UserDao userDao = MainApp.getDaoSession().getUserDao();
-                LiveData<User> liveData = userDao.loadLiveDataUser(mId);
-                liveData.observe(this, new Observer<User>() {
-                    @Override
-                    public void onChanged(@Nullable User user) {
-                        if (user == null) {
-                            user = new User();
-                        }
-                        if (TextUtils.isEmpty(userId)) {
-                            Toast.makeText(v.getContext(), "用户编号未填写", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        user.setUserId(userId);
-                        if (TextUtils.isEmpty(userName)) {
-                            Toast.makeText(v.getContext(), "用户姓名未填写", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        user.setUserName(userName);
-                        user.setUserAddress(address);
-                        user.setUserPhone(phone);
-                        long currentTimeMillis = System.currentTimeMillis();
-                        user.setUpdateTime(currentTimeMillis);
 
-                        user.setPowerMeterId(deviceId);
-                        user.setMeterReadingId(positionId);
-                        user.setPowerLineId(serialId);
-
-                        if (mId == 0) {
-                            user.setCreateTime(currentTimeMillis);
-                            userDao.insert(user);
-                        } else {
-                            userDao.update(user);
-                        }
-                        if (mListener != null) {
-                            mListener.onFragmentInteraction(Activity.RESULT_OK);
-                        }
-                        dismiss();
+                if (mUser != null) {
+                    int id = mUser.getId();
+                    if (TextUtils.isEmpty(userId)) {
+                        Toast.makeText(v.getContext(), "用户编号未填写", Toast.LENGTH_SHORT).show();
+                        return;
                     }
-                });
+                    mUser.setUserId(userId);
+                    if (TextUtils.isEmpty(userName)) {
+                        Toast.makeText(v.getContext(), "用户姓名未填写", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    mUser.setUserName(userName);
+                    mUser.setUserAddress(address);
+                    mUser.setUserPhone(phone);
+                    long currentTimeMillis = System.currentTimeMillis();
+                    mUser.setUpdateTime(currentTimeMillis);
+
+                    mUser.setPowerMeterId(deviceId);
+                    mUser.setMeterReadingId(positionId);
+                    mUser.setPowerLineId(serialId);
+
+                    String apiUrl = Application.BASE_HOST + "/feehelper/user/add";
+                    if (id == 0) {
+                        mUser.setCreateTime(currentTimeMillis);
+                    } else {
+                        apiUrl = Application.BASE_HOST + "/feehelper/user/update";
+                    }
+                    OkGo.<BaseResponseBean>post(apiUrl)
+                            .upJson(new Gson().toJson(mUser))
+                            .execute(new AbsCallback<BaseResponseBean>() {
+                                @Override
+                                public void onSuccess(Response<BaseResponseBean> response) {
+                                    if (getActivity() != null) {
+                                        Toast.makeText(getActivity().getApplicationContext(), response.body().getMsg(), Toast.LENGTH_SHORT).show();
+                                    }
+                                    if (mListener != null) {
+                                        mListener.onFragmentInteraction(Activity.RESULT_OK);
+                                    }
+                                    dismiss();
+                                }
+
+                                @Override
+                                public BaseResponseBean convertResponse(okhttp3.Response response) throws Throwable {
+                                    return new Gson().fromJson(response.body().string(), BaseResponseBean.class);
+                                }
+                            });
+                }
                 break;
             default:
                 break;

@@ -17,4 +17,10 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_home_new">HomeNewActivity</string>
+
+    <string name="user_name_place_holder">用户名称：%1$s</string>
+    <string name="user_phone_place_holder">手机：%1$s</string>
+    <string name="user_id_place_holder">用户编号：%1$s</string>
+    <string name="power_meter_id_place_holder">电能表号：%1$s</string>
 </resources>

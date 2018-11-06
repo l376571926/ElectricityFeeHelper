@@ -41,8 +41,6 @@ public class SettingActivity extends BackEnableActivity implements View.OnClickL
         mNewVersionLabel = findViewById(R.id.new_version);
 
         findViewById(R.id.update).setOnClickListener(this);
-        findViewById(R.id.update_order).setOnClickListener(this);
-        findViewById(R.id.update_user).setOnClickListener(this);
 
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setMessage("用户数据下载中，请稍等");
@@ -52,7 +50,7 @@ public class SettingActivity extends BackEnableActivity implements View.OnClickL
         updateTask.setCallback(new UpdateTask.ResultCallback() {
             @Override
             public void onFailure(Exception e) {
-
+                Toast.makeText(SettingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -104,10 +102,6 @@ public class SettingActivity extends BackEnableActivity implements View.OnClickL
                 } else {
                     versionUpdate(mNewApkUrl);
                 }
-                break;
-            case R.id.update_order:
-                break;
-            case R.id.update_user:
                 break;
             default:
                 break;

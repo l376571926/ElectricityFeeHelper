@@ -1,44 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/listPreferredItemHeight"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?attr/listPreferredItemPaddingRight">
+<layout>
 
-    <TextView
-        android:id="@+id/power_meter_id"
-        android:layout_width="wrap_content"
+    <data>
+
+        <variable
+            name="data"
+            type="group.tonight.electricityfeehelper.dao.User" />
+    </data>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceListItem"
-        tools:text="433000100000005622018" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+        android:paddingTop="16dp"
+        android:paddingRight="?attr/listPreferredItemPaddingRight"
+        android:paddingBottom="16dp">
 
-    <TextView
-        android:id="@+id/id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/phone"
-        android:textAppearance="?attr/textAppearanceListItemSecondary"
-        tools:text="9502057361" />
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{data.userId}"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            tools:text="用户编号：9502057361" />
 
-    <TextView
-        android:id="@+id/content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/phone"
-        android:textAppearance="?attr/textAppearanceListItemSecondary"
-        tools:text="邓臣艺" />
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/id"
+            android:text="@{@string/user_name_place_holder(data.userName)}"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            tools:text="用户名称：邓臣艺" />
 
-    <TextView
-        android:id="@+id/phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:textAppearance="?attr/textAppearanceListItemSecondary"
-        tools:text="13800138000" />
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@{data.userPhone}"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            tools:text="手机：13800138000" />
 
+        <TextView
+            android:id="@+id/power_meter_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/content"
+            android:text="@{data.powerMeterId}"
+            android:textAppearance="?attr/textAppearanceListItem"
+            tools:text="电能表号：433000100000005622018" />
+    </RelativeLayout>
+</layout>
 
-</RelativeLayout>

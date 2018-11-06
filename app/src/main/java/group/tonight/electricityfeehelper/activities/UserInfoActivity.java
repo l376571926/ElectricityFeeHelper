@@ -13,7 +13,7 @@ import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
 
-import group.tonight.electricityfeehelper.MainApp;
+import group.tonight.electricityfeehelper.Application;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.fragments.AddUserFragment;
@@ -24,8 +24,8 @@ import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListen
  */
 public class UserInfoActivity extends BackEnableActivity implements OnFragmentInteractionListener {
 
-    private int mId;
     private String mUserPhone;
+    private User mUser;
 
     @Override
     protected int setChildLayoutId() {
@@ -40,32 +40,22 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mId = getIntent().getIntExtra("_id", -1);
-        LiveData<User> liveData = MainApp.getDaoSession().getUserDao().loadLiveDataUser(mId);
-        liveData.observe(UserInfoActivity.this, new Observer<User>() {
+        mUser = (User) getIntent().getSerializableExtra("data");
+        mUserPhone = mUser.getUserPhone();
+        setLayoutData(BR.user, mUser);
+        setLayoutData(BR.dial, new View.OnClickListener() {
             @Override
-            public void onChanged(@Nullable User user) {
-                if (user == null) {
+            public void onClick(View v) {
+                if (TextUtils.isEmpty(mUserPhone)) {
                     return;
                 }
-                mUserPhone = user.getUserPhone();
-                setLayoutData(BR.user, user);
-                setLayoutData(BR.dial, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (TextUtils.isEmpty(mUserPhone)) {
-                            return;
-                        }
-                        if (TextUtils.equals("0", mUserPhone)) {
-                            return;
-                        }
-                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                        Uri data = Uri.parse("tel:" + mUserPhone);
-                        intent.setData(data);
-                        startActivity(intent);
-                    }
-                });
+                if (TextUtils.equals("0", mUserPhone)) {
+                    return;
+                }
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                Uri data = Uri.parse("tel:" + mUserPhone);
+                intent.setData(data);
+                startActivity(intent);
             }
         });
     }
@@ -79,7 +69,7 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit_user_info) {
-            AddUserFragment.newInstance(mId).show(getSupportFragmentManager(), "");
+            AddUserFragment.newInstance(mUser).show(getSupportFragmentManager(), "");
         }
         return super.onOptionsItemSelected(item);
     }

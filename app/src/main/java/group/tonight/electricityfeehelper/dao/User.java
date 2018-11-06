@@ -1,18 +1,11 @@
 package group.tonight.electricityfeehelper.dao;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-
-
 import java.io.Serializable;
-
 /**
  * Created by liyiwei on 2018/2/20.
  */
-@Entity
 public class User implements Serializable {
     private static final long serialVersionUID = -4794237852963304362L;
-    @PrimaryKey(autoGenerate = true)
     private int id;
 
     private String userId;//用户编号

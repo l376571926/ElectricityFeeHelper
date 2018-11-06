@@ -39,14 +39,6 @@
             android:visibility="@{firstLaunch?View.VISIBLE:View.GONE}"
             tools:visibility="visible" />
 
-        <ProgressBar
-            android:id="@+id/init_data_pb"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:visibility="@{firstLaunch?View.VISIBLE:View.GONE}"
-            tools:visibility="visible" />
     </FrameLayout>
 </layout>
 
