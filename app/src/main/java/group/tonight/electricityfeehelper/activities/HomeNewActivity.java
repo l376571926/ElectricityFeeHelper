@@ -55,7 +55,6 @@ import group.tonight.electricityfeehelper.dao.DownloadFirImBean;
 import group.tonight.electricityfeehelper.dao.PageUserListBean;
 import group.tonight.electricityfeehelper.dao.UrlBean;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.fragments.AddUserFragment;
 import group.tonight.electricityfeehelper.utils.Utils;
 
 // TODO: 2018/10/22 0022 添加扫电能表条形码查询用户数据功能
@@ -65,7 +64,6 @@ public class HomeNewActivity extends AppCompatActivity
     private RecyclerView mRecyclerView;
     private List<User> mSrcUserList = new ArrayList<>();
     private int mCurrentPage;
-    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,114 +122,7 @@ public class HomeNewActivity extends AppCompatActivity
         }, mRecyclerView);
         getData();
 
-        try {
-            final PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            final int versionCode = packageInfo.versionCode;
-            final String versionName = packageInfo.versionName;
-
-            OkGo.<DownloadFirImBean>get("https://download.fir.im/b6wk")
-                    .execute(new AbsCallback<DownloadFirImBean>() {
-                        @Override
-                        public void onSuccess(Response<DownloadFirImBean> response) {
-                            DownloadFirImBean downloadFirImBean = response.body();
-                            System.out.println();
-                            DownloadFirImBean.AppBean appBean = downloadFirImBean.getApp();
-                            final DownloadFirImBean.AppBean.ReleasesBean.MasterBean masterBean = appBean.getReleases().getMaster();
-
-                            final String build = masterBean.getBuild();
-                            final String version = masterBean.getVersion();
-                            if (String.valueOf(versionCode).equals(build) && versionName.equals(version)) {
-                                KLog.e("已是最新版本");
-                                return;
-                            }
-                            OkGo.<UrlBean>post("https://download.fir.im/apps/" + appBean.getId() + "/install")
-                                    .params("download_token", appBean.getToken())
-                                    .params("release_id", masterBean.getId())
-                                    .execute(new AbsCallback<UrlBean>() {
-                                        @Override
-                                        public void onSuccess(Response<UrlBean> response) {
-                                            UrlBean urlBean = response.body();
-                                            final String url = urlBean.getUrl();//https://pro-bd.fir.im/e0e3d98fe4968f9483195df70d215b62bef3f557.apk?auth_key=1545722213-0-9b1583649b4a4026bdaa53857e31cd6e-261661ae3e7eb73273851b93b26405d6
-                                            System.out.println();
-
-                                            String builder = "版本号：" + version
-                                                    + "\n"
-                                                    + "安装包大小：" + Utils.getPrintSize(masterBean.getFsize())
-                                                    + "\n"
-                                                    + "发布时间："
-                                                    + "\n"
-                                                    + DateFormat.getDateTimeInstance().format(new Date(masterBean.getCreated_at() * 1000))
-                                                    + "\n"
-                                                    + "更新内容："
-                                                    + "\n"
-                                                    + masterBean.getChangelog();
-
-                                            new AlertDialog.Builder(HomeNewActivity.this)
-                                                    .setTitle("发现新版本")
-                                                    .setIcon(R.mipmap.ic_launcher)
-                                                    .setMessage(builder)
-                                                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-
-                                                        }
-                                                    })
-                                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialog, int which) {
-                                                            String fileName = null;
-                                                            if (url.contains("?")) {
-                                                                if (url.contains("/")) {
-                                                                    fileName = url.substring(url.lastIndexOf("/") + 1, url.indexOf("?"));
-                                                                    System.out.println();
-                                                                }
-                                                            }
-                                                            mProgressDialog = new ProgressDialog(HomeNewActivity.this);
-                                                            mProgressDialog.setMessage("下载中。。。");
-                                                            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                                                            mProgressDialog.setMax(100);
-                                                            mProgressDialog.show();
-                                                            OkGo.<File>get(url)
-                                                                    .execute(new FileCallback(Environment.getExternalStorageDirectory().getPath(), fileName == null ? "app-release.apk" : fileName) {
-                                                                        @Override
-                                                                        public void downloadProgress(Progress progress) {
-                                                                            super.downloadProgress(progress);
-                                                                            mProgressDialog.setProgress((int) (progress.fraction * 100));
-                                                                        }
-
-                                                                        @Override
-                                                                        public void onSuccess(Response<File> response) {
-                                                                            mProgressDialog.dismiss();
-                                                                            Utils.installApk(HomeNewActivity.this, response.body().getPath());
-                                                                        }
-                                                                    });
-                                                        }
-                                                    })
-                                                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                                        @Override
-                                                        public void onDismiss(DialogInterface dialog) {
-
-                                                        }
-                                                    })
-                                                    .show();
-                                        }
-
-                                        @Override
-                                        public UrlBean convertResponse(okhttp3.Response response) throws Throwable {
-                                            return new Gson().fromJson(response.body().string(), UrlBean.class);
-                                        }
-                                    });
-                        }
-
-                        @Override
-                        public DownloadFirImBean convertResponse(okhttp3.Response response) throws Throwable {
-                            return new Gson().fromJson(response.body().charStream(), DownloadFirImBean.class);
-                        }
-                    });
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        SettingActivity.checkUpdate(this, false);
     }
 
     private void getData() {

@@ -30,7 +30,7 @@ public class DownloadFirImBean implements Serializable {
         this.app = app;
     }
 
-    public static class AppBean {
+    public static class AppBean implements Serializable {
         /**
          * id : 5c21cd1e959d690ced45d505
          * type : android
@@ -286,7 +286,7 @@ public class DownloadFirImBean implements Serializable {
             this.screenshots = screenshots;
         }
 
-        public static class MarketAppInfoBean {
+        public static class MarketAppInfoBean implements Serializable {
             /**
              * url :
              * icon_url :
@@ -332,7 +332,7 @@ public class DownloadFirImBean implements Serializable {
             }
         }
 
-        public static class ReleasesBean {
+        public static class ReleasesBean implements Serializable {
             /**
              * master : {"id":"5c21cd4d959d696e9fd92ece","version":"v1.0.7","build":"103","changelog":"初始版本 1.无自动更新功能 2.数据全部从tonight.group获取","is_history":false,"fsize":2072971,"created_at":1545719117,"release_type":"inhouse","is_onlined":false,"is_expired":false,"scan_virus":{"kingsoft":null,"baidu":null}}
              * history : []
@@ -357,7 +357,7 @@ public class DownloadFirImBean implements Serializable {
                 this.history = history;
             }
 
-            public static class MasterBean {
+            public static class MasterBean implements Serializable {
                 /**
                  * id : 5c21cd4d959d696e9fd92ece
                  * version : v1.0.7
@@ -472,7 +472,7 @@ public class DownloadFirImBean implements Serializable {
                     this.scan_virus = scan_virus;
                 }
 
-                public static class ScanVirusBean {
+                public static class ScanVirusBean implements Serializable {
                     /**
                      * kingsoft : null
                      * baidu : null

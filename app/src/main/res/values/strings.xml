@@ -26,4 +26,6 @@
     <string name="meter_reading_id_place_holder">抄表序号：%1$s</string>
 
     <string name="file_provider_authorities">group.tonight.electricityfeehelper.Matisse.CaptureStrategy</string>
+
+    <string name="current_version_name_place_holder">当前版本：%1$s</string>
 </resources>

@@ -1,53 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activities.SettingActivity">
+<layout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@android:drawable/divider_horizontal_bright" />
+    <data>
 
-    <LinearLayout
-        android:id="@+id/update"
+        <variable
+            name="data"
+            type="String" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="?android:listPreferredItemHeightSmall"
-        android:gravity="center_vertical"
-        android:paddingLeft="?android:listPreferredItemPaddingLeft"
-        android:paddingRight="?android:listPreferredItemPaddingRight">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".activities.SettingActivity">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="版本更新"
-            android:textAppearance="?android:textAppearanceListItem" />
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@android:drawable/divider_horizontal_bright" />
+
+        <LinearLayout
+            android:id="@+id/update"
+            android:layout_width="match_parent"
+            android:layout_height="?android:listPreferredItemHeightSmall"
+            android:gravity="center_vertical"
+            android:paddingLeft="?android:listPreferredItemPaddingLeft"
+            android:paddingRight="?android:listPreferredItemPaddingRight">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="版本更新"
+                android:textAppearance="?android:textAppearanceListItem" />
+
+            <TextView
+                android:id="@+id/new_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{@string/current_version_name_place_holder(data)}'
+                android:textSize="12sp"
+                tools:text="当前版本：1.0.0"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_right_grey600_24dp" />
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/new_version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/new_version_text_bg"
-            android:text="新版本"
-            android:textColor="@android:color/white"
-            android:textSize="8sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_chevron_right_grey600_24dp" />
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@android:drawable/divider_horizontal_bright" />
 
     </LinearLayout>
+</layout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="@android:drawable/divider_horizontal_bright" />
-
-
-</LinearLayout>
