@@ -213,8 +213,8 @@ public class HomeNewActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                break;
+//            case R.id.action_settings:
+//                break;
             case R.id.action_add_user:
 //                AddUserFragment.newInstance(new User()).show(getSupportFragmentManager(), "");
                 startActivityForResult(new Intent(this, AddUserActivity.class), 0);

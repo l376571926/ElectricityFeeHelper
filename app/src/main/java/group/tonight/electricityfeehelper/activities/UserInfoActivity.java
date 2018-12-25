@@ -101,7 +101,6 @@ public class UserInfoActivity extends BackEnableActivity implements OnFragmentIn
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_edit_user_info) {
-            AddUserFragment.newInstance(mUser).show(getSupportFragmentManager(), "");
             Intent intent = new Intent(this, AddUserActivity.class);
             intent.putExtra("data", mUser);
             startActivityForResult(intent, 0);
