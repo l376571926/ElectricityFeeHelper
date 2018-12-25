@@ -8,12 +8,12 @@
             type="group.tonight.electricityfeehelper.dao.User" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingLeft="?attr/listPreferredItemPaddingLeft"
         android:paddingTop="16dp"
         android:paddingRight="?attr/listPreferredItemPaddingRight"
@@ -31,8 +31,7 @@
             android:id="@+id/content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/id"
-            android:text="@{@string/user_name_place_holder(data.userName)}"
+            android:text="@{data.userName}"
             android:textAppearance="?attr/textAppearanceListItemSecondary"
             tools:text="用户名称：邓臣艺" />
 
@@ -40,19 +39,25 @@
             android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:text="@{data.userPhone}"
             android:textAppearance="?attr/textAppearanceListItemSecondary"
-            tools:text="手机：13800138000" />
+            tools:text="联系方式：13800138000" />
 
         <TextView
             android:id="@+id/power_meter_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/content"
             android:text="@{data.powerMeterId}"
-            android:textAppearance="?attr/textAppearanceListItem"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
             tools:text="电能表号：433000100000005622018" />
-    </RelativeLayout>
+
+        <TextView
+            android:id="@+id/meter_reading_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{data.meterReadingId}"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            tools:text="抄表序号：1" />
+    </LinearLayout>
 </layout>
 

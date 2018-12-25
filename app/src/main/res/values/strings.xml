@@ -23,4 +23,7 @@
     <string name="user_phone_place_holder">手机：%1$s</string>
     <string name="user_id_place_holder">用户编号：%1$s</string>
     <string name="power_meter_id_place_holder">电能表号：%1$s</string>
+    <string name="meter_reading_id_place_holder">抄表序号：%1$s</string>
+
+    <string name="file_provider_authorities">group.tonight.electricityfeehelper.Matisse.CaptureStrategy</string>
 </resources>

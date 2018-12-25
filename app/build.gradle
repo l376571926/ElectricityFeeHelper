@@ -13,8 +13,8 @@ android {
         applicationId "group.tonight.electricityfeehelper"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 102
-        versionName "v1.0.6"
+        versionCode 103
+        versionName "v1.0.7 alpha-1"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.config
         //指定room.schemaLocation生成的文件路径
@@ -26,7 +26,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
@@ -52,10 +52,10 @@ dependencies {
     //本地存储调试工具：数据库、偏好文件
     implementation 'com.facebook.stetho:stetho:1.5.0'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
-    implementation project(':githubupdatelibrary')
+//    implementation project(':githubupdatelibrary')
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
-    implementation 'com.github.tonightstudio:downloadmanagerhelper:1.0'
-    implementation 'com.github.tonightstudio:workbookhelper:1.5'
+//    implementation 'com.github.tonightstudio:downloadmanagerhelper:1.0'
+//    implementation 'com.github.tonightstudio:workbookhelper:1.5'
 
     implementation 'com.lzy.net:okgo:3.0.4'
 }

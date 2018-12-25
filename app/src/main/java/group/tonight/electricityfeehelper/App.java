@@ -12,8 +12,9 @@ import okhttp3.OkHttpClient;
  * Created by liyiwei on 2018/2/20.
  */
 
-public class Application extends android.app.Application {
-    public static final String BASE_HOST = "http://tonight.group:8080";
+public class App extends android.app.Application {
+    public static final String BASE_HOST = "http://tonight.group:8081";
+//    public static final String BASE_HOST = "http://192.168.0.215:8081";
 
     @Override
     public void onCreate() {

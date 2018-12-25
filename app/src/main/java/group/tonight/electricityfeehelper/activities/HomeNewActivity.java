@@ -1,47 +1,62 @@
 package group.tonight.electricityfeehelper.activities;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
-import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.AbsCallback;
+import com.lzy.okgo.callback.FileCallback;
+import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
 
-import java.lang.reflect.Type;
+import java.io.File;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import group.tonight.electricityfeehelper.Application;
+import group.tonight.electricityfeehelper.App;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.dao.ListResponseBean;
+import group.tonight.electricityfeehelper.dao.DownloadFirImBean;
+import group.tonight.electricityfeehelper.dao.PageUserListBean;
+import group.tonight.electricityfeehelper.dao.UrlBean;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.fragments.AddUserFragment;
+import group.tonight.electricityfeehelper.utils.Utils;
 
 // TODO: 2018/10/22 0022 添加扫电能表条形码查询用户数据功能
 public class HomeNewActivity extends AppCompatActivity
@@ -49,12 +64,15 @@ public class HomeNewActivity extends AppCompatActivity
     private TextView mCountView;
     private RecyclerView mRecyclerView;
     private List<User> mSrcUserList = new ArrayList<>();
+    private int mCurrentPage;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_new);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -94,53 +112,158 @@ public class HomeNewActivity extends AppCompatActivity
                 }
                 Intent intent = new Intent(view.getContext(), UserInfoActivity.class);
                 intent.putExtra("data", item);
-                startActivity(intent);
+                startActivityForResult(intent, 0);
             }
         });
-        OkGo.<ListResponseBean<User>>get(Application.BASE_HOST + "/feehelper/user/list")
-                .cacheTime(24 * 3600 * 1000)
-                .cacheMode(CacheMode.IF_NONE_CACHE_REQUEST)
-                .execute(new AbsCallback<ListResponseBean<User>>() {
-                    @Override
-                    public void onSuccess(Response<ListResponseBean<User>> response) {
-                        try {
-                            mSrcUserList.clear();
-                            mSrcUserList.addAll(response.body().getData());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        refreshData(response);
-                    }
+        mBaseQuickAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
+            @Override
+            public void onLoadMoreRequested() {
+                mCurrentPage++;
+                getData();
+            }
+        }, mRecyclerView);
+        getData();
 
-                    @Override
-                    public void onCacheSuccess(Response<ListResponseBean<User>> response) {
-                        super.onCacheSuccess(response);
-                        try {
-                            mSrcUserList.clear();
-                            mSrcUserList.addAll(response.body().getData());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        refreshData(response);
-                    }
+        try {
+            final PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            final int versionCode = packageInfo.versionCode;
+            final String versionName = packageInfo.versionName;
 
-                    @Override
-                    public group.tonight.electricityfeehelper.dao.ListResponseBean<User> convertResponse(okhttp3.Response response) throws Throwable {
-                        String json = response.body().string();
-                        Type type = new TypeToken<ListResponseBean<User>>() {
-                        }.getType();
-                        return new Gson().fromJson(json, type);
-                    }
-                });
+            OkGo.<DownloadFirImBean>get("https://download.fir.im/b6wk")
+                    .execute(new AbsCallback<DownloadFirImBean>() {
+                        @Override
+                        public void onSuccess(Response<DownloadFirImBean> response) {
+                            DownloadFirImBean downloadFirImBean = response.body();
+                            System.out.println();
+                            DownloadFirImBean.AppBean appBean = downloadFirImBean.getApp();
+                            final DownloadFirImBean.AppBean.ReleasesBean.MasterBean masterBean = appBean.getReleases().getMaster();
+
+                            final String build = masterBean.getBuild();
+                            final String version = masterBean.getVersion();
+                            if (String.valueOf(versionCode).equals(build) && versionName.equals(version)) {
+                                KLog.e("已是最新版本");
+                                return;
+                            }
+                            OkGo.<UrlBean>post("https://download.fir.im/apps/" + appBean.getId() + "/install")
+                                    .params("download_token", appBean.getToken())
+                                    .params("release_id", masterBean.getId())
+                                    .execute(new AbsCallback<UrlBean>() {
+                                        @Override
+                                        public void onSuccess(Response<UrlBean> response) {
+                                            UrlBean urlBean = response.body();
+                                            final String url = urlBean.getUrl();//https://pro-bd.fir.im/e0e3d98fe4968f9483195df70d215b62bef3f557.apk?auth_key=1545722213-0-9b1583649b4a4026bdaa53857e31cd6e-261661ae3e7eb73273851b93b26405d6
+                                            System.out.println();
+
+                                            String builder = "版本号：" + version
+                                                    + "\n"
+                                                    + "安装包大小：" + Utils.getPrintSize(masterBean.getFsize())
+                                                    + "\n"
+                                                    + "发布时间："
+                                                    + "\n"
+                                                    + DateFormat.getDateTimeInstance().format(new Date(masterBean.getCreated_at() * 1000))
+                                                    + "\n"
+                                                    + "更新内容："
+                                                    + "\n"
+                                                    + masterBean.getChangelog();
+
+                                            new AlertDialog.Builder(HomeNewActivity.this)
+                                                    .setTitle("发现新版本")
+                                                    .setIcon(R.mipmap.ic_launcher)
+                                                    .setMessage(builder)
+                                                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+
+                                                        }
+                                                    })
+                                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            String fileName = null;
+                                                            if (url.contains("?")) {
+                                                                if (url.contains("/")) {
+                                                                    fileName = url.substring(url.lastIndexOf("/") + 1, url.indexOf("?"));
+                                                                    System.out.println();
+                                                                }
+                                                            }
+                                                            mProgressDialog = new ProgressDialog(HomeNewActivity.this);
+                                                            mProgressDialog.setMessage("下载中。。。");
+                                                            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                                                            mProgressDialog.setMax(100);
+                                                            mProgressDialog.show();
+                                                            OkGo.<File>get(url)
+                                                                    .execute(new FileCallback(Environment.getExternalStorageDirectory().getPath(), fileName == null ? "app-release.apk" : fileName) {
+                                                                        @Override
+                                                                        public void downloadProgress(Progress progress) {
+                                                                            super.downloadProgress(progress);
+                                                                            mProgressDialog.setProgress((int) (progress.fraction * 100));
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onSuccess(Response<File> response) {
+                                                                            mProgressDialog.dismiss();
+                                                                            Utils.installApk(HomeNewActivity.this, response.body().getPath());
+                                                                        }
+                                                                    });
+                                                        }
+                                                    })
+                                                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                                        @Override
+                                                        public void onDismiss(DialogInterface dialog) {
+
+                                                        }
+                                                    })
+                                                    .show();
+                                        }
+
+                                        @Override
+                                        public UrlBean convertResponse(okhttp3.Response response) throws Throwable {
+                                            return new Gson().fromJson(response.body().string(), UrlBean.class);
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public DownloadFirImBean convertResponse(okhttp3.Response response) throws Throwable {
+                            return new Gson().fromJson(response.body().charStream(), DownloadFirImBean.class);
+                        }
+                    });
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void refreshData(Response<ListResponseBean<User>> response) {
-        ListResponseBean<User> body = response.body();
-        List<User> userList = body.getData();
+    private void getData() {
+        OkGo.<PageUserListBean>get(App.BASE_HOST + "/user/findUserListByPage")
+                .params("page", mCurrentPage)
+                .execute(new AbsCallback<PageUserListBean>() {
+                    @Override
+                    public void onSuccess(Response<PageUserListBean> response) {
+                        PageUserListBean body = response.body();
+                        List<User> userList = body.getData();
 
-        List<User> userArrayList = new ArrayList<>(userList);
-        mCountView.setText(userArrayList.size() + "");
-        mBaseQuickAdapter.replaceData(userArrayList);
+                        if (mCurrentPage == 0) {
+                            mBaseQuickAdapter.replaceData(userList);
+                            mSrcUserList.clear();
+                        } else {
+                            mBaseQuickAdapter.addData(userList);
+                        }
+                        mSrcUserList.addAll(userList);
+
+                        mCountView.setText(body.getTotalElements() + "");
+                        if (userList.isEmpty()) {
+                            mBaseQuickAdapter.loadMoreEnd();
+                        } else {
+                            mBaseQuickAdapter.loadMoreComplete();
+                        }
+                    }
+
+                    @Override
+                    public PageUserListBean convertResponse(okhttp3.Response response) throws Throwable {
+                        return new Gson().fromJson(response.body().string(), PageUserListBean.class);
+                    }
+                });
     }
 
     @Override
@@ -171,17 +294,25 @@ public class HomeNewActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextChange(String newText) {
                 KLog.e(newText);
-                List<User> resultList = new ArrayList<>();
-                for (User user : mSrcUserList) {
-                    String userId = user.getUserId();
-                    String userName = user.getUserName();
-                    String powerMeterId = user.getPowerMeterId();
-                    String userPhone = user.getUserPhone();
-                    if (userId.contains(newText) || userName.contains(newText) || powerMeterId.contains(newText) || userPhone.contains(newText)) {
-                        resultList.add(user);
-                    }
+                if (TextUtils.isEmpty(newText)) {
+                    mBaseQuickAdapter.replaceData(mSrcUserList);
+                    mBaseQuickAdapter.setEnableLoadMore(true);
+                } else {
+                    mBaseQuickAdapter.setEnableLoadMore(false);
+                    OkGo.<PageUserListBean>get(App.BASE_HOST + "/user/searchUser")
+                            .params("key", newText)
+                            .execute(new AbsCallback<PageUserListBean>() {
+                                @Override
+                                public void onSuccess(Response<PageUserListBean> response) {
+                                    mBaseQuickAdapter.replaceData(response.body().getData());
+                                }
+
+                                @Override
+                                public PageUserListBean convertResponse(okhttp3.Response response) throws Throwable {
+                                    return new Gson().fromJson(response.body().string(), PageUserListBean.class);
+                                }
+                            });
                 }
-                mBaseQuickAdapter.replaceData(resultList);
                 return false;
             }
         });
@@ -194,7 +325,8 @@ public class HomeNewActivity extends AppCompatActivity
             case R.id.action_settings:
                 break;
             case R.id.action_add_user:
-                AddUserFragment.newInstance(new User()).show(getSupportFragmentManager(), "");
+//                AddUserFragment.newInstance(new User()).show(getSupportFragmentManager(), "");
+                startActivityForResult(new Intent(this, AddUserActivity.class), 0);
                 break;
             case R.id.nav_setting:
                 startActivity(new Intent(this, SettingActivity.class));
@@ -203,6 +335,16 @@ public class HomeNewActivity extends AppCompatActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        mCurrentPage = 0;
+        getData();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -237,6 +379,7 @@ public class HomeNewActivity extends AppCompatActivity
             helper.setText(R.id.id, getString(R.string.user_id_place_holder, item.getUserId()));
             helper.setText(R.id.content, getString(R.string.user_name_place_holder, item.getUserName()));
             helper.setText(R.id.phone, getString(R.string.user_phone_place_holder, item.getUserPhone()));
+            helper.setText(R.id.meter_reading_id, getString(R.string.meter_reading_id_place_holder, item.getMeterReadingId()));
         }
     };
 }

@@ -10,13 +10,13 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
-import group.tonight.downloadmanagerhelper.DownloadManagerHelper;
+//import group.tonight.downloadmanagerhelper.DownloadManagerHelper;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.myandroidlibrary.Release;
-import group.tonight.myandroidlibrary.UpdateTask;
+//import group.tonight.myandroidlibrary.Release;
+//import group.tonight.myandroidlibrary.UpdateTask;
 
 public class SettingActivity extends BackEnableActivity implements View.OnClickListener {
-    private DownloadManagerHelper mDownloadManagerHelper;
+//    private DownloadManagerHelper mDownloadManagerHelper;
     private ProgressDialog mProgressDialog;
 
     private String mNewApkUrl;
@@ -35,7 +35,7 @@ public class SettingActivity extends BackEnableActivity implements View.OnClickL
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDownloadManagerHelper = new DownloadManagerHelper(this);
+//        mDownloadManagerHelper = new DownloadManagerHelper(this);
 
 
         mNewVersionLabel = findViewById(R.id.new_version);
@@ -46,33 +46,33 @@ public class SettingActivity extends BackEnableActivity implements View.OnClickL
         mProgressDialog.setMessage("用户数据下载中，请稍等");
 
 
-        UpdateTask updateTask = new UpdateTask();
-        updateTask.setCallback(new UpdateTask.ResultCallback() {
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(SettingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResponse(Release release) {
-                String tag_name = release.getTag_name();
-                String name = release.getName();
-                String body = release.getBody();
-                PackageManager packageManager = getPackageManager();
-                try {
-                    PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-                    String versionName = packageInfo.versionName;
-                    if (!versionName.equals(tag_name)) {
-                        mNewApkUrl = release.getAssets().get(0).getBrowser_download_url();
-                        mNewVersionLabel.setVisibility(View.VISIBLE);
-                    }
-
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        new Thread(updateTask).start();
+//        UpdateTask updateTask = new UpdateTask();
+//        updateTask.setCallback(new UpdateTask.ResultCallback() {
+//            @Override
+//            public void onFailure(Exception e) {
+//                Toast.makeText(SettingActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void onResponse(Release release) {
+//                String tag_name = release.getTag_name();
+//                String name = release.getName();
+//                String body = release.getBody();
+//                PackageManager packageManager = getPackageManager();
+//                try {
+//                    PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+//                    String versionName = packageInfo.versionName;
+//                    if (!versionName.equals(tag_name)) {
+//                        mNewApkUrl = release.getAssets().get(0).getBrowser_download_url();
+//                        mNewVersionLabel.setVisibility(View.VISIBLE);
+//                    }
+//
+//                } catch (PackageManager.NameNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//        new Thread(updateTask).start();
     }
 
     public void versionUpdate(final String apkUrl) {
@@ -81,7 +81,7 @@ public class SettingActivity extends BackEnableActivity implements View.OnClickL
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mDownloadManagerHelper.enqueue(apkUrl);
+//                        mDownloadManagerHelper.enqueue(apkUrl);
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

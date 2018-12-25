@@ -1,6 +1,5 @@
 package group.tonight.electricityfeehelper.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,16 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.AbsCallback;
-import com.lzy.okgo.model.Response;
-
-import group.tonight.electricityfeehelper.Application;
+import group.tonight.electricityfeehelper.App;
 import group.tonight.electricityfeehelper.R;
 import group.tonight.electricityfeehelper.dao.User;
 import group.tonight.electricityfeehelper.interfaces.OnFragmentInteractionListener;
-import group.tonight.workbookhelper.BaseResponseBean;
 
 /**
  * 添加用电户
@@ -168,31 +161,32 @@ public class AddUserFragment extends DialogFragment implements View.OnClickListe
                     mUser.setMeterReadingId(positionId);
                     mUser.setPowerLineId(serialId);
 
-                    String apiUrl = Application.BASE_HOST + "/feehelper/user/add";
+                    String apiUrl = App.BASE_HOST + "/feehelper/user/add";
                     if (id == 0) {
                         mUser.setCreateTime(currentTimeMillis);
                     } else {
-                        apiUrl = Application.BASE_HOST + "/feehelper/user/update";
+                        apiUrl = App.BASE_HOST + "/feehelper/user/update";
                     }
-                    OkGo.<BaseResponseBean>post(apiUrl)
-                            .upJson(new Gson().toJson(mUser))
-                            .execute(new AbsCallback<BaseResponseBean>() {
-                                @Override
-                                public void onSuccess(Response<BaseResponseBean> response) {
-                                    if (getActivity() != null) {
-                                        Toast.makeText(getActivity().getApplicationContext(), response.body().getMsg(), Toast.LENGTH_SHORT).show();
-                                    }
-                                    if (mListener != null) {
-                                        mListener.onFragmentInteraction(Activity.RESULT_OK);
-                                    }
-                                    dismiss();
-                                }
+//                    OkGo.<BaseResponseBean>post(apiUrl)
+//                            .upJson(new Gson().toJson(mUser))
+//                            .execute(new AbsCallback<BaseResponseBean>() {
+//                                @Override
+//                                public void onSuccess(Response<BaseResponseBean> response) {
+//                                    if (getActivity() != null) {
+//                                        Toast.makeText(getActivity().getApplicationContext(), response.body().getMsg(), Toast.LENGTH_SHORT).show();
+//                                    }
+//                                    if (mListener != null) {
+//                                        mListener.onFragmentInteraction(Activity.RESULT_OK);
+//                                    }
+//                                    dismiss();
+//                                }
+//
+//                                @Override
+//                                public BaseResponseBean convertResponse(okhttp3.Response response) throws Throwable {
+//                                    return new Gson().fromJson(response.body().string(), BaseResponseBean.class);
+//                                }
+//                            });
 
-                                @Override
-                                public BaseResponseBean convertResponse(okhttp3.Response response) throws Throwable {
-                                    return new Gson().fromJson(response.body().string(), BaseResponseBean.class);
-                                }
-                            });
                 }
                 break;
             default:

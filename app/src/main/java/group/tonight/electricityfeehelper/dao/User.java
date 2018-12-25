@@ -1,6 +1,7 @@
 package group.tonight.electricityfeehelper.dao;
 
 import java.io.Serializable;
+
 /**
  * Created by liyiwei on 2018/2/20.
  */
@@ -29,10 +30,6 @@ public class User implements Serializable {
     private String powerSupplyId;//供电单位
     private String powerSupplyName;//供电所
     private String userAddress;//用电地址
-
-    private double yingShouSum;
-    private double shiShouSum;
-    private double qianFeiSum;
 
     private long createTime;
     private long updateTime;
@@ -214,30 +211,6 @@ public class User implements Serializable {
         this.userAddress = userAddress;
     }
 
-    public double getYingShouSum() {
-        return yingShouSum;
-    }
-
-    public void setYingShouSum(double yingShouSum) {
-        this.yingShouSum = yingShouSum;
-    }
-
-    public double getShiShouSum() {
-        return shiShouSum;
-    }
-
-    public void setShiShouSum(double shiShouSum) {
-        this.shiShouSum = shiShouSum;
-    }
-
-    public double getQianFeiSum() {
-        return qianFeiSum;
-    }
-
-    public void setQianFeiSum(double qianFeiSum) {
-        this.qianFeiSum = qianFeiSum;
-    }
-
     public long getCreateTime() {
         return createTime;
     }
@@ -262,37 +235,4 @@ public class User implements Serializable {
         this.remarks = remarks;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", userPhone='" + userPhone + '\'' +
-                ", powerLineId='" + powerLineId + '\'' +
-                ", powerLineName='" + powerLineName + '\'' +
-                ", meterReadingDay='" + meterReadingDay + '\'' +
-                ", meterReader='" + meterReader + '\'' +
-                ", measurementPointId='" + measurementPointId + '\'' +
-                ", meterReadingId='" + meterReadingId + '\'' +
-                ", powerMeterId='" + powerMeterId + '\'' +
-                ", powerValueType='" + powerValueType + '\'' +
-                ", lastPowerValue='" + lastPowerValue + '\'' +
-                ", currentPowerValue='" + currentPowerValue + '\'' +
-                ", consumePowerValue='" + consumePowerValue + '\'' +
-                ", comprehensiveRatio='" + comprehensiveRatio + '\'' +
-                ", meterReadingNumber='" + meterReadingNumber + '\'' +
-                ", exceptionTypes='" + exceptionTypes + '\'' +
-                ", meterReadingStatus='" + meterReadingStatus + '\'' +
-                ", powerSupplyId='" + powerSupplyId + '\'' +
-                ", powerSupplyName='" + powerSupplyName + '\'' +
-                ", userAddress='" + userAddress + '\'' +
-                ", yingShouSum=" + yingShouSum +
-                ", shiShouSum=" + shiShouSum +
-                ", qianFeiSum=" + qianFeiSum +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", remarks='" + remarks + '\'' +
-                '}';
-    }
 }
