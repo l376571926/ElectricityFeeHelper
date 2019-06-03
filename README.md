@@ -3,4 +3,4 @@
 
 App下载链接二维码：
 
-![Image text](http://qr.liantu.com/api.php?text=https://github.com/l376571926/ElectricityFeeHelper/releases/download/v1.0.7alpha-5/app-release.apk)
+![Image text](http://qr.liantu.com/api.php?text=https://github.com/l376571926/ElectricityFeeHelper/releases/download/v1.0.8/app-release.apk)
