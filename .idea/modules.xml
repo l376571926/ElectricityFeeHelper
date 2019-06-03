@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ElectricityFeeHelper.iml" filepath="$PROJECT_DIR$/ElectricityFeeHelper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ElectricityFeeHelper.iml" filepath="$PROJECT_DIR$/ElectricityFeeHelper.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/githubupdatelibrary/githubupdatelibrary.iml" filepath="$PROJECT_DIR$/githubupdatelibrary/githubupdatelibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/githubupdatelibrary/githubupdatelibrary.iml" filepath="$PROJECT_DIR$/githubupdatelibrary/githubupdatelibrary.iml" />
     </modules>
   </component>

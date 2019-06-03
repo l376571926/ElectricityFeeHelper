@@ -56,6 +56,10 @@ public abstract class BackEnableActivity extends AppCompatActivity {
         mViewDataBinding.setVariable(variableId, value);
     }
 
+    protected ViewDataBinding getDataBinding() {
+        return mViewDataBinding;
+    }
+
     /**
      * 如果继承的Activity不需要显示后退按钮，重写此方法返回false即可
      *

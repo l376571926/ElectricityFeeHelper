@@ -1,23 +1,15 @@
 package group.tonight.electricityfeehelper.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,31 +23,22 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.google.gson.Gson;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
-import com.lzy.okgo.callback.FileCallback;
-import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 import com.socks.library.KLog;
 
-import java.io.File;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import group.tonight.electricityfeehelper.App;
 import group.tonight.electricityfeehelper.R;
-import group.tonight.electricityfeehelper.dao.DownloadFirImBean;
 import group.tonight.electricityfeehelper.dao.PageUserListBean;
-import group.tonight.electricityfeehelper.dao.UrlBean;
 import group.tonight.electricityfeehelper.dao.User;
-import group.tonight.electricityfeehelper.utils.Utils;
 
 // TODO: 2018/10/22 0022 添加扫电能表条形码查询用户数据功能
 public class HomeNewActivity extends AppCompatActivity
@@ -73,18 +56,8 @@ public class HomeNewActivity extends AppCompatActivity
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -121,8 +94,6 @@ public class HomeNewActivity extends AppCompatActivity
             }
         }, mRecyclerView);
         getData();
-
-        SettingActivity.checkUpdate(this, false);
     }
 
     private void getData() {
@@ -169,7 +140,6 @@ public class HomeNewActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.home_new, menu);
 
         SearchView mSearchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
@@ -213,10 +183,7 @@ public class HomeNewActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R.id.action_settings:
-//                break;
             case R.id.action_add_user:
-//                AddUserFragment.newInstance(new User()).show(getSupportFragmentManager(), "");
                 startActivityForResult(new Intent(this, AddUserActivity.class), 0);
                 break;
             case R.id.nav_setting:
@@ -243,18 +210,9 @@ public class HomeNewActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 

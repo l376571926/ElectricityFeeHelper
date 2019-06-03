@@ -13,8 +13,8 @@ android {
         applicationId "group.tonight.electricityfeehelper"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 103
-        versionName "v1.0.7 alpha-5"
+        versionCode 104
+        versionName "v1.0.8"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.config
         //指定room.schemaLocation生成的文件路径
@@ -50,12 +50,13 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.38'
     implementation 'com.google.code.gson:gson:2.8.5'
     //本地存储调试工具：数据库、偏好文件
-    implementation 'com.facebook.stetho:stetho:1.5.0'
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
+    implementation 'com.facebook.stetho:stetho:1.5.1'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 //    implementation project(':githubupdatelibrary')
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
 //    implementation 'com.github.tonightstudio:downloadmanagerhelper:1.0'
 //    implementation 'com.github.tonightstudio:workbookhelper:1.5'
 
     implementation 'com.lzy.net:okgo:3.0.4'
+    implementation 'cn.yipianfengye.android:zxing-library:2.2'
 }
