@@ -24,6 +24,13 @@ android {
             }
         }
     }
+
+    //http://antonioleiva.com/android-multiple-resource-folders/
+    sourceSets.main.res.srcDirs = [
+            'src/main/res',
+            'src/main/res-umeng-push'
+    ]
+
     buildTypes {
         release {
             minifyEnabled true
@@ -59,4 +66,11 @@ dependencies {
 
     implementation 'com.lzy.net:okgo:3.0.4'
     implementation 'cn.yipianfengye.android:zxing-library:2.2'
+
+    //PushSDK必须依赖基础组件库，所以需要加入对应依赖
+    implementation 'com.umeng.umsdk:common:2.0.2'
+    //PushSDK必须依赖utdid库，所以需要加入对应依赖
+    implementation 'com.umeng.umsdk:utdid:1.1.5.3'
+    //PushSDK
+    implementation 'com.umeng.umsdk:push:5.0.2'
 }
